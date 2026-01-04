@@ -1,0 +1,91 @@
+CREATE TABLE IF NOT EXISTS party (
+	id INTEGER PRIMARY KEY,
+	title TEXT NOT NULL,
+	description TEXT NOT NULL,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS party_admin (
+	id INTEGER PRIMARY KEY,
+	party_id INTEGER NOT NULL,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (party_id) REFERENCES party(id)
+);
+
+
+CREATE TABLE IF NOT EXISTS guests (
+	id INTEGER PRIMARY KEY,
+	name TEXT NOT NULL UNIQUE,
+	status TEXT CHECK(status in ('GOING', 'MAYBE', 'NOT_GOING')),
+	party_id INTEGER NOT NULL,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (party_id) REFERENCES party(id)
+);
+
+
+CREATE TABLE IF NOT EXISTS announcements (
+	id INTEGER PRIMARY KEY,
+	header TEXT NOT NULL,
+	body TEXT NOT NULL,
+	party_id INTEGER NOT NULL,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (party_id) REFERENCES party(id)
+);
+
+
+CREATE TABLE IF NOT EXISTS posts (
+	id INTEGER PRIMARY KEY,
+	body TEXT NOT NULL,
+	party_id INTEGER NOT NULL,
+	guest_id INTEGER NOT NULL,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (party_id) REFERENCES party(id),
+	FOREIGN KEY (guest_id) REFERENCES guests(id)
+);
+
+
+-- CREATE TABLE IF NOT EXISTS party_hash (
+-- 	id INTEGER PRIMARY KEY,
+-- 	hash TEXT NOT NULL,
+-- 	party_id INTEGER NOT NULL,
+-- 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+-- 	FOREIGN KEY (party_id) REFERENCES party(id)
+-- );
+
+-- CREATE TABLE IF NOT EXISTS party_admin_id (
+-- 	id INTEGER PRIMARY KEY,
+-- 	hash TEXT NOT NULL,
+-- 	party_id INTEGER NOT NULL,
+-- 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+-- 	FOREIGN KEY (party_id) REFERENCES party(id)
+-- );
+
+-- CREATE TABLE IF NOT EXISTS party_admin_token (
+-- 	id INTEGER PRIMARY KEY,
+-- 	token TEXT NOT NULL,
+-- 	expiry DATETIME NOT NULL,
+-- 	party_id INTEGER NOT NULL,
+-- 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+-- 	FOREIGN KEY (party_id) REFERENCES party(id)
+-- );
+
+-- CREATE TABLE IF NOT EXISTS party_guest_id (
+-- 	id INTEGER PRIMARY KEY,
+-- 	hash TEXT NOT NULL,
+-- 	party_id INTEGER NOT NULL,
+-- 	guest_id INTEGER NOT NULL,
+-- 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+-- 	FOREIGN KEY (party_id) REFERENCES party(id),
+-- 	FOREIGN KEY (guest_id) REFERENCES guests(id)
+-- );
+
+-- CREATE TABLE IF NOT EXISTS party_guest_token (
+-- 	id INTEGER PRIMARY KEY,
+-- 	token TEXT NOT NULL,
+-- 	expiry DATETIME NOT NULL,
+-- 	party_id INTEGER NOT NULL,
+-- 	guest_id INTEGER NOT NULL,
+-- 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+-- 	FOREIGN KEY (party_id) REFERENCES party(id),
+-- 	FOREIGN KEY (guest_id) REFERENCES guests(id)
+-- );

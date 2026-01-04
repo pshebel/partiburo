@@ -1,0 +1,21 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: dockerfiles/dev
+    container_name: partiburo-backend
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./db:/db
+    environment:
+      - DB_PATH=/db/data/database.db
+      - DB_MIGRATIONS=/db/migrations
+      - API_PORT=4000
+      - ALLOWED_ORIGINS=http://localhost:8081,http://localhost:3000
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    driver: bridge
