@@ -1,0 +1,89 @@
+---
+- name: Install nginx, C development tools, and SQLite
+  hosts: all
+  become: yes
+  vars:
+    # Define packages for different OS families
+    packages:
+      - nginx
+      - pip
+      - gcc
+      - gcc-c++
+      - make
+      - sqlite
+      - sqlite-devel
+  tasks:
+    - name: Update package cache
+      yum:
+        update_cache: yes
+
+    - name: Install packages on RedHat
+      yum:
+        name: "{{ packages }}"
+        state: present
+
+    - name: Install cryptography for that Python interpreter
+      pip:
+        name: "cryptography>=3.3"
+        state: present
+
+    - name: Start and enable nginx service
+      systemd:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Verify nginx is running
+      service:
+        name: nginx
+        state: started
+      register: nginx_status
+
+    - name: Check nginx status
+      debug:
+        msg: "Nginx service is {{ nginx_status.state }}"
+
+    - name: Verify C compiler installation
+      command: gcc --version
+      register: gcc_version
+      changed_when: false
+
+    - name: Display GCC version
+      debug:
+        msg: "{{ gcc_version.stdout_lines[0] }}"
+
+    - name: Verify SQLite installation
+      command: sqlite3 --version
+      register: sqlite_version
+      changed_when: false
+
+    - name: Display SQLite version
+      debug:
+        msg: "SQLite version: {{ sqlite_version.stdout }}"
+
+    - name: Create a test SQLite database
+      shell: |
+        sqlite3 /tmp/test.db "CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT);"
+        sqlite3 /tmp/test.db "INSERT INTO test (name) VALUES ('Hello from Ansible');"
+        sqlite3 /tmp/test.db "SELECT * FROM test;"
+      register: sqlite_test
+      changed_when: false
+
+    - name: Display SQLite test results
+      debug:
+        msg: "{{ sqlite_test.stdout_lines }}"
+
+    - name: Clean up test database
+      file:
+        path: /tmp/test.db
+        state: absent
+
+    - name: Display installation summary
+      debug:
+        msg:
+          - "Installation completed successfully!"
+          - "Services installed:"
+          - "  - Nginx web server (running)"
+          - "  - GCC C compiler"
+          - "  - SQLite database"
+          - "  - Development headers and libraries"

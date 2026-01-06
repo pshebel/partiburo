@@ -20,6 +20,10 @@ export interface Guest {
     CreatedAt:  string;
 }
 
+export interface GuestResponse {
+    id: string;
+}
+
 export interface Post {
     ID:         string;
     Name:       string;

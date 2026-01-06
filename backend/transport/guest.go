@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/gorilla/mux"
-
 	"github.com/pshebel/partiburo/backend/models"
 	"github.com/pshebel/partiburo/backend/operations"
 )
@@ -14,10 +12,11 @@ import (
 func GetGuestsHandler(w http.ResponseWriter, r *http.Request) {
 	guests, err := operations.GetGuests()
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, "guests not found", http.StatusNotFound)
 		return
 	}
-
+	fmt.Println(guests)
 	json.NewEncoder(w).Encode(guests)
 }
 
@@ -36,19 +35,7 @@ func CreateGuestHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(resp)
         return
     }
-
-	vars := mux.Vars(r)
-    tokenHash := vars["token_hash"]
-    if tokenHash == "" {
-        w.WriteHeader(http.StatusBadRequest)
-        json.NewEncoder(w).Encode(models.Response{
-            Code:    400,
-            Message: "missing token_hash",
-        })
-        return
-    }
-
-	resp, err := operations.CreateGuest(req, tokenHash)
+	resp, err := operations.CreateGuest(req)
 	if err != nil {
 		resp := models.Response{
 			Code: 500,

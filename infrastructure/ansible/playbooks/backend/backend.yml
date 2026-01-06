@@ -1,0 +1,82 @@
+---
+- name: Setup backend
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create group
+      group:
+        name: partiburo
+        state: present
+
+    - name: Create Users Task
+      user:
+        name: partiburo
+        state: present
+        password: "{{ 'tmp' | password_hash('sha512') }}"
+        shell: /bin/bash
+        group: partiburo
+
+    - name: Copy Service file
+      copy:
+        src: "{{ playbook_dir }}/partiburo.service"
+        dest: /usr/lib/systemd/system/partiburo.service
+        owner: partiburo
+        group: partiburo
+        mode: '0600'
+
+    - name: Create a new directory
+      file:
+        path: /etc/partiburo/
+        state: directory
+        owner: partiburo
+        group: partiburo
+        mode: '0755'
+        recurse: yes
+
+    - name: Copy Env file
+      copy:
+        src: "{{ playbook_dir }}/partiburo.env"
+        dest: /etc/partiburo/partiburo.env
+        owner: partiburo
+        group: partiburo
+        mode: '0600'
+
+    - name: Apply new SELinux context to /etc/partiburo/partiburo.env
+      command: restorecon -Rv /etc/partiburo/partiburo.env
+      changed_when: true
+
+    - name: Format the EBS volume if not already formatted
+      filesystem:
+        fstype: ext4
+        dev: /dev/nvme1n1
+        force: no 
+    
+    - name: Create mount point directory
+      file:
+        path: /home/partiburo/data
+        state: directory
+        owner: partiburo
+        group: partiburo
+        mode: '0755'
+    
+    - name: Mount the EBS volume temporarily
+      mount:
+        path: /home/partiburo/data
+        src: /dev/nvme1n1
+        fstype: ext4
+        state: mounted
+
+    - name: Give partiburo ownership
+      file:
+        path: /home/partiburo/data
+        owner: partiburo
+        group: partiburo
+        recurse: yes 
+
+    # - name: Add entry to fstab for persistent mounting
+    #   mount:
+    #     path: /home/partiburo/data
+    #     src: "UUID={{ uuid_result.stdout }}"
+    #     fstype: ext4
+    #     opts: defaults,nofail
+    #     state: present

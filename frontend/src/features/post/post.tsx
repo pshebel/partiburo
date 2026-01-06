@@ -23,8 +23,7 @@ export const CreatePost = ({ onLoginSuccess }: LoginProps) => {
 
   const saveUserMutation = useMutation({
     mutationFn: async (req: { name: string; status: string }) => {
-    //   const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}`, {
-        const response = await fetch('http://localhost:4000/guest', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/guest`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

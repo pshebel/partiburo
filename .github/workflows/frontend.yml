@@ -1,0 +1,67 @@
+name: Deploy Dev Frontend
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - frontend/**
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        cache-dependency-path: frontend/package-lock.json
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build project
+      run: npm run build
+      env:
+        VITE_API_URL: ${{ secrets.VITE_API_URL }}
+    
+    - name: Setup SSH key
+      uses: webfactory/ssh-agent@v0.8.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    
+    - name: Add server to known hosts
+      run: |
+        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+    
+    - name: Copy files to server
+      run: |
+        scp -r ./dist/* ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }}:~/build
+    
+    - name: Move binary and set permissions
+      run: |
+        ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} \
+          "sudo rm -rf ${{ secrets.FRONTEND_PATH }}/* && \
+           sudo mv ~/build/* ${{ secrets.FRONTEND_PATH }} && \ 
+           sudo chown -R nginx:nginx ${{ secrets.FRONTEND_PATH }} && \
+           sudo restorecon -v ${{ secrets.FRONTEND_PATH }}
+           "
+
+    - name: Restart nginx
+      run: |
+        ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} \
+          "sudo systemctl restart nginx"
+    
+    - name: Verify deployment
+      run: |
+        ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} \
+          "sudo systemctl status nginx --no-pager -l"

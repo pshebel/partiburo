@@ -8,8 +8,7 @@ export const getGuests = (): UseQueryResult<Guest[]> => {
     return useQuery({
         queryKey: ['guests'],
         queryFn: async (): Promise<Guest[]> => {
-            // const response = await fetch(`${process.env.API_URL}`);
-            const response = await fetch('http://localhost:4000/guests');
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/guests`);
             return await response.json()
         }
     })

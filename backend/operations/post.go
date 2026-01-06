@@ -7,9 +7,9 @@ import (
 	"github.com/pshebel/partiburo/backend/database"
 )
 
-func CreatePost(req models.PostRequest) (models.Post, error) {
-	party_id := 0
+func CreatePost(req models.PostRequest, tokenHash string) (models.Post, error) {
 	post := models.Post{}
+	party_id := 0
 
 	db, err := database.GetDB()
 	if err != nil {

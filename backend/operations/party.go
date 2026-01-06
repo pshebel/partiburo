@@ -9,16 +9,10 @@ import (
 	"github.com/pshebel/partiburo/backend/database"
 )
 
-func GetParty(tokenHash string) (models.Party, error) {
+func GetParty() (models.Party, error) {
 	party := models.Party{}
 
-	token, err := utils.FromHashString(tokenHash)
-	if err != nil {
-		log.Fatal(err)
-		return party, err
-	}
-
-	party_id := token.PartyId
+	party_id := 0
 
 	db, err := database.GetDB()
 	if err != nil {
@@ -151,23 +145,8 @@ func CreateParty(req models.PartyRequest) (models.PartyResponse, error) {
 		log.Fatal(err)
         return resp, err
     }
-
-	res, err = tx.Exec("INSERT INTO party_admin (party_id) VALUES (?)", party_id)
-	if err != nil {
-		tx.Rollback()
-		log.Fatal(err)
-		return resp, err
-	}
-
-	admin_id, err := res.LastInsertId()
-    if err != nil {
-		tx.Rollback()
-		log.Fatal(err)
-        return resp, err
-    }
-
 	token := models.Token{
-		UserID: 	strconv.FormatInt(admin_id, 10),
+		UserID: 	"0",
 		PartyId: 	strconv.FormatInt(party_id, 10),
 		Role: 		"Admin",
 	}

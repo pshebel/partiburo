@@ -21,12 +21,11 @@ func init() {
 	// Apply middleware
 	r.Use(loggingMiddleware)
 
-	r.HandleFunc("/{token_hash}/party", transport.GetPartyHandler).Methods("GET")
-	r.HandleFunc("/party", transport.CreatePartyHandler).Methods("POST")
-	r.HandleFunc("/guests", transport.GetGuestsHandler).Methods("GET")
-	r.HandleFunc("/{token_hash}/guest", transport.CreateGuestHandler).Methods("POST")
-
-	r.HandleFunc("/post", transport.CreatePostHandler).Methods("POST")
+	r.HandleFunc("/api/party", transport.CreatePartyHandler).Methods("POST")
+	r.HandleFunc("/api/party", transport.GetPartyHandler).Methods("GET")
+	r.HandleFunc("/api/guest", transport.CreateGuestHandler).Methods("POST")
+	r.HandleFunc("/api/guests", transport.GetGuestsHandler).Methods("GET")
+	r.HandleFunc("/api/post", transport.CreatePostHandler).Methods("POST")
 
 
 	fmt.Println(env.AllowedOrigins)

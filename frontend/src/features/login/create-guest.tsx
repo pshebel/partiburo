@@ -3,7 +3,7 @@ import { loginFormOptions } from './login-form-options.tsx'
 import {  useMutation } from '@tanstack/react-query';
 
 import { createGuest } from '../../hooks/identity';
-import { Response } from '../../interfaces/response.js'
+import { GuestResponse } from '../../interfaces/response.js'
 
 
 interface LoginProps {
@@ -22,9 +22,8 @@ export const CreateGuest = ({ onLoginSuccess }: LoginProps) => {
   })
 
   const saveUserMutation = useMutation({
-    mutationFn: async (req: { id: string, body: string }) => {
-    //   const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}`, {
-        const response = await fetch('http://localhost:4000/post', {
+    mutationFn: async (req: { name: string, status: string }) => {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/guest`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -33,16 +32,12 @@ export const CreateGuest = ({ onLoginSuccess }: LoginProps) => {
         });
         return response.json() as Promise<Response>;
     },
-    onSuccess: (data: Response) => {
-        if (data.Code === 200) {
-            createGuest(data.Message)
-            onLoginSuccess(data.Message);
-        } else {
-            window.confirm(data.Message)
-        }
+    onSuccess: (data: GuestResponse) => {
+      createGuest(data.id)
+      onLoginSuccess(data.id);
     },
     onError: (err: any) => {
-        window.confirm(err)
+      window.confirm(err)
     },
   })
 

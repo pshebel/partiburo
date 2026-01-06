@@ -1,0 +1,21 @@
+[Unit]
+Description=partiburo
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/partiburo
+ExecStart=/usr/local/bin/partiburo
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=partiburo
+User=partiburo
+Group=partiburo
+Environment=PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
+EnvironmentFile=/etc/partiburo/partiburo.env
+
+[Install]
+WantedBy=multi-user.target

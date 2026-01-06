@@ -9,8 +9,7 @@ export const getParty = (): UseQueryResult<Party> => {
     return useQuery({
         queryKey: ['party'],
         queryFn: async (): Promise<Party> => {
-            // const response = await fetch(`${process.env.API_URL}`);
-            const response = await fetch('http://localhost:4000');
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/party`);
             return await response.json()
         }
     })

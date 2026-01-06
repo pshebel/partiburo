@@ -55,10 +55,11 @@ type Guest struct {
 
 type GuestRequest struct {
 	Name	string `json:"name"`
+	Status string `json:"status"`
 }
 
 type GuestResponse struct {
-	TokenHash	string `json:"token_hash"`
+	ID	string `json:"id"`
 }
 
 type Post struct {
