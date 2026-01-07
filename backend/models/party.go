@@ -4,6 +4,8 @@ import (
 	"time"
 )
 
+
+
 type LoginRequest struct {
 	Password	string
 }
@@ -12,14 +14,28 @@ type LoginResponse struct {
 	Token	string
 }
 
+
+type Home struct {
+	ID				string
+	Title			string
+	Description		string
+	Date			string
+	Time			string
+	Address			string
+	Announcements	[]Announcement
+	Guests			[]Guest
+	Posts			[]Post
+	CreatedAt 		time.Time
+}
+
 type Party struct {
 	ID				string
 	Title			string
 	Description		string
-	Announcements	[]Announcement
-	Guests			[]Guest
-	Posts			[]Post
-	CreatedAt time.Time
+	Date			string
+	Time			string
+	Address			string
+	CreatedAt 		time.Time
 }
 
 
@@ -46,31 +62,3 @@ type Announcement struct {
 	CreatedAt time.Time
 }
 
-type Guest struct {
-	ID			string
-	Name		string
-	Status		string
-	CreatedAt 	time.Time
-}
-
-type GuestRequest struct {
-	Name	string `json:"name"`
-	Status string `json:"status"`
-}
-
-type GuestResponse struct {
-	ID	string `json:"id"`
-}
-
-type Post struct {
-	ID			string
-	Name		string
-	Body		string
-	CreatedAt 	time.Time
-}
-
-
-type PostRequest struct {
-	GuestID		string
-	Body		string
-}

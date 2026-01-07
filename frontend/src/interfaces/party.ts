@@ -1,6 +1,20 @@
+import {Guest} from './guest'
+
 export interface Party {
     Title:          string;
     Description:    string;
+    Date:           string;
+    Time:           string;
+    Address:        string;
+    CreatedAt:      string;
+}
+
+export interface Home {
+    Title:          string;
+    Description:    string;
+    Date:           string;
+    Time:           string;
+    Address:        string;
     Announcements:  Announcement[];
     Guests:         Guest[];
     Posts:          Post[];
@@ -13,20 +27,13 @@ export interface Announcement {
     CreatedAt:  string;
 }
 
-export interface Guest {
-    ID:         string;
-    Name:       string;
-    Status:     string;
-    CreatedAt:  string;
-}
-
 export interface GuestResponse {
     id: string;
 }
 
 export interface Post {
-    ID:         string;
-    Name:       string;
-    Body:       string;
-    CreatedAt:  string;
+    id:         string;
+    name:       string;
+    body:       string;
+    createdAt:  string;
 }

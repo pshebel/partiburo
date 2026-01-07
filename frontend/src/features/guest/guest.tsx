@@ -1,12 +1,12 @@
 import { useAppForm } from '../../hooks/form.tsx'
-import { loginFormOptions } from './login-form-options.tsx'
+import { loginFormOptions } from './guest-form-options.tsx'
 import {  useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom'
-import { createGuest } from '../../hooks/identity';
-import { GuestResponse } from '../../interfaces/response.js'
+import { getGuest } from '../../hooks/identity'
 
-export const CreateGuest = () => {
+export const Guest = () => {
   const navigate = useNavigate()
+
   const form = useAppForm({
     ...loginFormOptions,
     onSubmit: async ({ formApi, value }) => {
@@ -18,22 +18,27 @@ export const CreateGuest = () => {
   })
 
   const saveUserMutation = useMutation({
-    mutationFn: async (req: { name: string, phone: string, status: string }) => {
+    mutationFn: async (req: { status: string, phone: string }) => {
+        const guest_id = getGuest()
+        const body = {
+          id: guest_id,
+          status: req.status,
+          phone: req.phone,
+        }
         const response = await fetch(`${import.meta.env.VITE_API_URL}/guest`, {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(req),
+                body: JSON.stringify(body),
         });
         return response.json() as Promise<Response>;
     },
-    onSuccess: (data: GuestResponse) => {
-      createGuest(data.id)
-      navigate('/')
+    onSuccess: () => {
+        navigate('/')
     },
     onError: (err: any) => {
-      window.confirm(err)
+        window.confirm(err)
     },
   })
 
@@ -44,14 +49,10 @@ export const CreateGuest = () => {
         form.handleSubmit()
       }}
     >
-      <h1>Identify Yourself</h1>
-      <form.AppField
-        name="name"
-        children={(field) => <field.TextField label="Name" />}
-      />
+      <h1>Update RSVP or Phone Number</h1>
       <form.AppField
         name="phone"
-        children={(field) => <field.TextField label="Phone (optional if you want to receive updates)" />}
+        children={(field) => <field.TextField label="Phone" />}
       />
       <form.Field
         name="status" // This is the field name in defaultValues

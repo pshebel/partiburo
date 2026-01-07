@@ -7,6 +7,7 @@ import (
 	"database/sql"
 
 	"github.com/pshebel/partiburo/backend/models"
+	"github.com/pshebel/partiburo/backend/utils"
 	"github.com/pshebel/partiburo/backend/database"
 )
 
@@ -62,8 +63,8 @@ func CreateGuest(guest models.GuestRequest) (models.GuestResponse, error) {
 		return resp, nil
 	}
 
-	guestQuery := `INSERT INTO guests (name, status, party_id) VALUES (?, ?, ?)`
-	res, err := db.Exec(guestQuery, guest.Name, guest.Status, party_id)
+	guestQuery := `INSERT INTO guests (name, phone, status, party_id) VALUES (?, ?, ?, ?)`
+	res, err := db.Exec(guestQuery, guest.Name, guest.Phone, guest.Status, party_id)
     if err != nil {
 		log.Fatal(err)
         return resp, nil
@@ -76,5 +77,46 @@ func CreateGuest(guest models.GuestRequest) (models.GuestResponse, error) {
     }
 
 	resp.ID = strconv.FormatInt(id, 10)
+	return resp, nil
+}
+
+func UpdateGuest(guest models.UpdateGuestRequest) (models.Guest, error) {
+	resp := models.Guest{}
+	party_id := 0
+
+	db, err := database.GetDB()
+	if err != nil {
+		log.Fatal(err)
+		return resp, nil
+	}
+
+	tx, err := db.Begin()
+	if err != nil {
+		log.Fatal(err)
+		return resp, err
+	}
+
+	defer tx.Commit()
+
+	if guest.Status == "GOING" || guest.Status == "NOT_GOING" || guest.Status == "MAYBE" {
+		query := `UPDATE guests SET status=? WHERE party_id=? AND id=?`
+		_, err := db.Exec(query, guest.Status, party_id, guest.ID)
+		if err != nil {
+			tx.Rollback()
+			log.Fatal(err)
+			return resp, nil
+		}
+	}
+
+	if guest.Phone != "" && utils.IsValidPhone(guest.Phone) {
+		query := `UPDATE guests SET phone=? WHERE party_id=? AND id=?`
+		_, err := db.Exec(query, guest.Phone, party_id, guest.ID)
+		if err != nil {
+			tx.Rollback()
+			log.Fatal(err)
+			return resp, nil
+		}
+	}
+	
 	return resp, nil
 }

@@ -46,3 +46,28 @@ func CreateGuestHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(resp)
 }
+
+func UpdateGuestHandler(w http.ResponseWriter, r *http.Request) {
+	var req models.UpdateGuestRequest
+	fmt.Println(r.Body)
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		fmt.Println(err)
+		resp := models.Response{
+			Code: 500,
+			Message: "invalid request body",
+		}
+		json.NewEncoder(w).Encode(resp)
+        return
+    }
+	resp, err := operations.UpdateGuest(req)
+	if err != nil {
+		resp := models.Response{
+			Code: 500,
+			Message: "failed to create guest",
+		}
+		json.NewEncoder(w).Encode(resp)
+        return
+	}
+	json.NewEncoder(w).Encode(resp)
+}

@@ -5,14 +5,11 @@ import {  useMutation } from '@tanstack/react-query';
 import { getGuests } from '../../hooks/guests';
 import { createGuest } from '../../hooks/identity';
 import {Guest} from '../../interfaces/party';
-import { Response } from '../../interfaces/response.js'
+import { useNavigate } from 'react-router-dom'
 
+export const SelectGuest = () => {
+  const navigate = useNavigate()
 
-interface SelectGuestProps {
-    onLoginSuccess: (id: string) => void;
-}
-
-export const SelectGuest = ({ onLoginSuccess }: SelectGuestProps) => {
   const [guest, setGuest] = useState('');
   const { data, isLoading, error } = getGuests();
 
@@ -31,7 +28,7 @@ export const SelectGuest = ({ onLoginSuccess }: SelectGuestProps) => {
       return
     }
     createGuest(guest)
-    onLoginSuccess(guest)
+    navigate('/')
   }
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -49,7 +46,7 @@ export const SelectGuest = ({ onLoginSuccess }: SelectGuestProps) => {
             <option value="">-----</option>
             {data.map((guest: Guest) => {
               return (
-                <option value={guest.ID}>{guest.Name}</option>
+                <option value={guest.id}>{guest.name}</option>
               )
             })}
           </select>

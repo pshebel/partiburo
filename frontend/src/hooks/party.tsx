@@ -1,8 +1,6 @@
 import { useQuery, UseQueryResult, useMutation } from '@tanstack/react-query';
 
-import {createGuest} from './identity';
-import { Party, Guest } from '../interfaces/party';
-import { Response } from '../interfaces/response';
+import { Party } from '../interfaces/party';
 
 
 export const getParty = (): UseQueryResult<Party> => {

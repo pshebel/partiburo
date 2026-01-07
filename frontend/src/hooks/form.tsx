@@ -3,6 +3,8 @@ import { lazy } from 'react'
 import { fieldContext, formContext, useFormContext } from './form-context.tsx'
 
 const TextField = lazy(() => import('../components/text-fields.tsx'))
+const TextArea = lazy(() => import('../components/text-area.tsx'))
+
 
 function SubscribeButton({ label }: { label: string }) {
   const form = useFormContext()
@@ -16,6 +18,7 @@ function SubscribeButton({ label }: { label: string }) {
 export const { useAppForm, withForm, withFieldGroup } = createFormHook({
   fieldComponents: {
     TextField,
+    TextArea
   },
   formComponents: {
     SubscribeButton,

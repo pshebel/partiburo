@@ -13,3 +13,4 @@ export const getGuests = (): UseQueryResult<Guest[]> => {
         }
     })
 }
+

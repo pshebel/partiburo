@@ -23,15 +23,19 @@ func init() {
 
 	r.HandleFunc("/api/party", transport.CreatePartyHandler).Methods("POST")
 	r.HandleFunc("/api/party", transport.GetPartyHandler).Methods("GET")
-	r.HandleFunc("/api/guest", transport.CreateGuestHandler).Methods("POST")
-	r.HandleFunc("/api/guests", transport.GetGuestsHandler).Methods("GET")
+	r.HandleFunc("/api/home", transport.GetHomeHandler).Methods("GET")
+
 	r.HandleFunc("/api/post", transport.CreatePostHandler).Methods("POST")
+
+	r.HandleFunc("/api/guest", transport.CreateGuestHandler).Methods("POST")
+	r.HandleFunc("/api/guest", transport.UpdateGuestHandler).Methods("PUT")
+	r.HandleFunc("/api/guests", transport.GetGuestsHandler).Methods("GET")
 
 
 	fmt.Println(env.AllowedOrigins)
 	cors := handlers.CORS(
         handlers.AllowedOrigins(env.AllowedOrigins), // React dev server
-        handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"}),
+        handlers.AllowedMethods([]string{"GET", "POST", "PUT", "OPTIONS"}),
         handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
     )
 

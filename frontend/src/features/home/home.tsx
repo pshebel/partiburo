@@ -1,8 +1,9 @@
-import { getParty } from '../../hooks/party';
-
-
-export const Party = () => {
-    const { data, isLoading, error } = getParty();
+import { getHome } from '../../hooks/home';
+import { getGuest } from '../../hooks/identity'
+import { Link } from 'react-router-dom'
+export const Home = () => {
+    const { data, isLoading, error } = getHome();
+    const guest_id = getGuest()
     if (isLoading) {
         return (
             <div>
@@ -32,10 +33,13 @@ export const Party = () => {
                 <h1>about</h1>
                 <h2>{data.Title}</h2>
                 <div>{data.Description}</div>
+                <div>Date: {data.Date}</div>
+                <div>Time: {data.Time}</div>
+                <div>Address: {data.Address}</div>
             </div>
             <div>
                 <h1>announcements</h1>
-                {data.Announcements.sort((a,b) => Date.parse(a.CreatedAt) - Date.parse(b.CreatedAt)).map((a, i) => (
+                {data.Announcements.sort((a,b) => Date.parse(b.CreatedAt) - Date.parse(a.CreatedAt)).map((a, i) => (
                     <div key={i}>
                         <h3>{a.Header}</h3>
                         <div>{a.Body}</div>
@@ -44,19 +48,23 @@ export const Party = () => {
             </div>
             <div>
                 <h1>guests</h1>
-                {data.Guests.sort((a,b) => Date.parse(a.CreatedAt) - Date.parse(b.CreatedAt)).map((g, i) => (
+                {data.Guests.sort((a,b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)).map((g, i) => {
+                    return (
                     <div key={i}>
-                        <span>{g.Name}</span>
-                        <span>{g.Status}</span>
+                        <span>{g.name}</span>
+                        <span>{g.status}</span>
+                        {g.id === guest_id && <Link to="/guest">Edit</Link>}
                     </div>
-                ))}
+                    )}
+                )}
             </div>
             <div>
                 <h1>posts</h1>
-                {data.Posts.sort((a,b) => Date.parse(a.CreatedAt) - Date.parse(b.CreatedAt)).map((p, i) => (
+                <h2><Link to="/post">create post</Link></h2>
+                {data.Posts.sort((a,b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)).map((p, i) => (
                     <div key={i}>
-                        <span>{p.Name}</span>
-                        <span>{p.Body}</span>
+                        <span>{p.name}</span>
+                        <span>{p.body}</span>
                     </div>
                 ))}
             </div>

@@ -3,6 +3,7 @@ import { formOptions } from '@tanstack/react-form'
 export const loginFormOptions = formOptions({
   defaultValues: {
     name: '',
+    phone: '',
     status: '',
   },
   validators: {
