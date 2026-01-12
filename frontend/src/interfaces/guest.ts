@@ -1,7 +1,7 @@
 export interface UpdateGuest {
     ID:         string;
     Status:     string;
-    Phone:      string;
+    Email:      string;
 }
 
 export interface Guest {

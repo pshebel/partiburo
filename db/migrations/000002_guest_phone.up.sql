@@ -1,2 +1,0 @@
-ALTER TABLE guests
-ADD COLUMN phone TEXT DEFAULT '';

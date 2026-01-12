@@ -40,8 +40,11 @@ type Party struct {
 
 
 type PartyRequest struct {
-	Title		string
-	Description	string
+	Title		string	`json:"title"`
+	Date		string	`json:"date"`
+	Time		string	`json:"time"`
+	Address		string	`json:"address"`
+	Description	string	`json:"description"`
 }
 
 

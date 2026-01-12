@@ -8,7 +8,10 @@ variable "environment" {
   type        = string
   default     = "dev"
 }
-
+variable "profile_name" {
+  description = "instance profile name to attach to ec2"
+  type        = string
+}
 variable "name_prefix" {
   description = "prefix for resources created for a project"
   type        = string

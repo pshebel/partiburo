@@ -46,6 +46,13 @@ module "vpc" {
   environment = var.environment
 }
 
+module "ses" {
+  source = "../../modules/ses"
+
+  name_prefix = "partiburo"
+  region      = var.region
+  environment = var.environment
+}
 
 # compute
 module "monolith" {
@@ -59,6 +66,7 @@ module "monolith" {
   environment   = var.environment
   subnet_id     = module.vpc.public_subnets[0]
   vpc_id        = module.vpc.vpc_id
+  profile_name = module.ses.instance_profile_name
 }
 
 

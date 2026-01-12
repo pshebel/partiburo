@@ -9,6 +9,7 @@ import (
 	"github.com/pshebel/partiburo/backend/models"
 	"github.com/pshebel/partiburo/backend/utils"
 	"github.com/pshebel/partiburo/backend/database"
+	"github.com/pshebel/partiburo/backend/notifications"
 )
 
 
@@ -63,8 +64,17 @@ func CreateGuest(guest models.GuestRequest) (models.GuestResponse, error) {
 		return resp, nil
 	}
 
-	guestQuery := `INSERT INTO guests (name, phone, status, party_id) VALUES (?, ?, ?, ?)`
-	res, err := db.Exec(guestQuery, guest.Name, guest.Phone, guest.Status, party_id)
+	if guest.Email != "" && utils.IsValidEmail(guest.Email) {
+		_, err := notifications.ConfirmEmail(guest.Email)
+		if err != nil {
+			log.Fatal(err)
+			return resp, nil
+		}
+	}
+
+
+	guestQuery := `INSERT INTO guests (name, email, status, party_id) VALUES (?, ?, ?, ?)`
+	res, err := db.Exec(guestQuery, guest.Name, guest.Email, guest.Status, party_id)
     if err != nil {
 		log.Fatal(err)
         return resp, nil
@@ -108,9 +118,16 @@ func UpdateGuest(guest models.UpdateGuestRequest) (models.Guest, error) {
 		}
 	}
 
-	if guest.Phone != "" && utils.IsValidPhone(guest.Phone) {
-		query := `UPDATE guests SET phone=? WHERE party_id=? AND id=?`
-		_, err := db.Exec(query, guest.Phone, party_id, guest.ID)
+	if guest.Email != "" && utils.IsValidEmail(guest.Email) {
+		_, err := notifications.ConfirmEmail(guest.Email)
+		if err != nil {
+			tx.Rollback()
+			log.Fatal(err)
+			return resp, nil
+		}
+
+		query := `UPDATE guests SET email=? WHERE party_id=? AND id=?`
+		_, err = db.Exec(query, guest.Email, party_id, guest.ID)
 		if err != nil {
 			tx.Rollback()
 			log.Fatal(err)

@@ -9,19 +9,19 @@ type Guest struct {
 	ID			string 		`json:"id"`
 	Name		string	 	`json:"name"`
 	Status		string 		`json:"status"`
-	Phone		string 		`json:"phone"`
+	Email		string 		`json:"email"`
 	CreatedAt 	time.Time 	`json:"createdAt"`
 }
 
 type UpdateGuestRequest struct {
 	ID 		string `json:"id"`
 	Status 	string `json:"status"`
-	Phone 	string `json:"phone"`
+	Email 	string `json:"email"`
 }
 
 type GuestRequest struct {
 	Name	string `json:"name"`
-	Phone	string `json:"phone"`
+	Email	string `json:"email"`
 	Status string `json:"status"`
 }
 

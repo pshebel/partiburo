@@ -1,15 +1,12 @@
-module github.com/pshebel/partiburo/backend
+module github.com/pshebel/partiburo/mail
 
-go 1.24.0
+go 1.25.1
 
 require (
 	github.com/aws/aws-sdk-go-v2 v1.41.1
 	github.com/aws/aws-sdk-go-v2/config v1.32.7
 	github.com/aws/aws-sdk-go-v2/service/sesv2 v1.59.1
-	github.com/gorilla/handlers v1.5.2
-	github.com/gorilla/mux v1.8.1
 	github.com/mattn/go-sqlite3 v1.14.33
-	golang.org/x/crypto v0.46.0
 )
 
 require (
@@ -26,5 +23,4 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.35.13 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.41.6 // indirect
 	github.com/aws/smithy-go v1.24.0 // indirect
-	github.com/felixge/httpsnoop v1.0.3 // indirect
 )

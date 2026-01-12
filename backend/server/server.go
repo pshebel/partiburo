@@ -31,6 +31,10 @@ func init() {
 	r.HandleFunc("/api/guest", transport.UpdateGuestHandler).Methods("PUT")
 	r.HandleFunc("/api/guests", transport.GetGuestsHandler).Methods("GET")
 
+	r.HandleFunc("/api/unsubscribe", transport.CreateUnsubscribeHandler).Methods("POST")
+	r.HandleFunc("/api/confirm", transport.CreateConfirmHandler).Methods("POST")
+
+
 
 	fmt.Println(env.AllowedOrigins)
 	cors := handlers.CORS(

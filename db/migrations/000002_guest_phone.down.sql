@@ -1,2 +1,0 @@
-ALTER TABLE guests
-DROP COLUMN phone;

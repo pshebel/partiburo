@@ -49,6 +49,7 @@ resource "aws_instance" "monolith" {
   key_name               = var.key_pair_name
   vpc_security_group_ids = [aws_security_group.monolith.id]
   subnet_id              = var.subnet_id
+  iam_instance_profile   = var.profile_name
 
   tags = {
     Name        = var.name_prefix

@@ -18,12 +18,12 @@ export const Guest = () => {
   })
 
   const saveUserMutation = useMutation({
-    mutationFn: async (req: { status: string, phone: string }) => {
+    mutationFn: async (req: { status: string, email: string }) => {
         const guest_id = getGuest()
         const body = {
           id: guest_id,
           status: req.status,
-          phone: req.phone,
+          email: req.email,
         }
         const response = await fetch(`${import.meta.env.VITE_API_URL}/guest`, {
             method: 'PUT',
@@ -49,10 +49,10 @@ export const Guest = () => {
         form.handleSubmit()
       }}
     >
-      <h1>Update RSVP or Phone Number</h1>
+      <h1>Update RSVP or Email Number</h1>
       <form.AppField
-        name="phone"
-        children={(field) => <field.TextField label="Phone" />}
+        name="email"
+        children={(field) => <field.TextField label="Email" />}
       />
       <form.Field
         name="status" // This is the field name in defaultValues

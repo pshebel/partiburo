@@ -18,7 +18,7 @@ export const CreateGuest = () => {
   })
 
   const saveUserMutation = useMutation({
-    mutationFn: async (req: { name: string, phone: string, status: string }) => {
+    mutationFn: async (req: { name: string, email: string, status: string }) => {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/guest`, {
             method: 'POST',
             headers: {
@@ -50,8 +50,8 @@ export const CreateGuest = () => {
         children={(field) => <field.TextField label="Name" />}
       />
       <form.AppField
-        name="phone"
-        children={(field) => <field.TextField label="Phone (optional if you want to receive updates)" />}
+        name="email"
+        children={(field) => <field.TextField label="Email (optional if you want to receive updates)" />}
       />
       <form.Field
         name="status" // This is the field name in defaultValues
