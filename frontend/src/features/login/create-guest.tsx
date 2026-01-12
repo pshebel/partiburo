@@ -39,71 +39,66 @@ export const CreateGuest = () => {
 
   return (
     <form
-      onSubmit={(e) => {
-        e.preventDefault()
-        form.handleSubmit()
-      }}
+      onSubmit={(e) => { e.preventDefault(); form.handleSubmit(); }}
+      className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100"
     >
-      <h1>Identify Yourself</h1>
-      <form.AppField
-        name="name"
-        children={(field) => <field.TextField label="Name" />}
-      />
-      <form.AppField
-        name="email"
-        children={(field) => <field.TextField label="Email (optional if you want to receive updates)" />}
-      />
-      <form.Field
-        name="status" // This is the field name in defaultValues
-        children={(field) => (
-          <div>
-            <label>Attending:</label>
-            <div>
-              <input
-                type="radio"
-                id="GOING"
-                name={field.name} // Use the field name for grouping
-                value="GOING"
-                checked={field.state.value === 'GOING'} // Bind checked state
-                onChange={(e) => field.handleChange(e.target.value)} // Update form state on change
-              />
-              <label htmlFor="GOING">Going</label>
+      <h1 className="text-xl font-bold text-gray-900 mb-6">RSVP / Identify Yourself</h1>
+      
+      <div className="space-y-5">
+        <form.AppField
+          name="name"
+          children={(field) => (
+            <div className="flex flex-col gap-1">
+               <label className="text-sm font-semibold text-gray-700">Name</label>
+               <field.TextField className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition" />
             </div>
+          )}
+        />
 
-            <div>
-              <input
-                type="radio"
-                id="MAYBE"
-                name={field.name}
-                value="MAYBE"
-                checked={field.state.value === 'MAYBE'}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-              <label htmlFor="MAYBE">Maybe</label>
+        <form.AppField
+          name="email"
+          children={(field) => (
+            <div className="flex flex-col gap-1">
+               <label className="text-sm font-semibold text-gray-700">Email (Optional)</label>
+               <field.TextField className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="To receive updates" />
             </div>
-            <div>
-              <input
-                type="radio"
-                id="NOT_GOING"
-                name={field.name}
-                value="NOT_GOING"
-                checked={field.state.value === 'NOT_GOING'}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-              <label htmlFor="NOT_GOING">Not Going</label>
+          )}
+        />
+
+        <form.Field
+          name="status"
+          children={(field) => (
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-700">Will you be attending?</label>
+              <div className="grid grid-cols-3 gap-2">
+                {['GOING', 'MAYBE', 'NOT_GOING'].map((val) => (
+                  <label key={val} className={`
+                    flex items-center justify-center p-3 rounded-xl border cursor-pointer transition text-sm font-bold
+                    ${field.state.value === val ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'}
+                  `}>
+                    <input
+                      type="radio"
+                      className="hidden"
+                      name={field.name}
+                      value={val}
+                      checked={field.state.value === val}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                    />
+                    {val.replace('_', ' ')}
+                  </label>
+                ))}
+              </div>
+              {field.state.meta.errors && <em className="text-xs text-red-500">{field.state.meta.errors.join(', ')}</em>}
             </div>
+          )}
+        />
 
-            {/* Display potential errors */}
-            {field.state.meta.errors ? (
-                <em>{field.state.meta.errors.join(', ')}</em>
-            ) : null}
-          </div>
-        )}
-      />
-
-      <form.AppForm>
-        <form.SubscribeButton label="Submit" />
-      </form.AppForm>
+        <div className="pt-4">
+          <form.AppForm>
+            <form.SubscribeButton label={"Submit"} className="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-100" />
+          </form.AppForm>
+        </div>
+      </div>
     </form>
   )
 }

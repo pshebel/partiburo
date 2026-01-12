@@ -43,68 +43,82 @@ export const Guest = () => {
   })
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault()
-        form.handleSubmit()
-      }}
-    >
-      <h1>Update RSVP or Email Number</h1>
-      <form.AppField
-        name="email"
-        children={(field) => <field.TextField label="Email" />}
-      />
-      <form.Field
-        name="status" // This is the field name in defaultValues
-        children={(field) => (
-          <div>
-            <label>Attending:</label>
-            <div>
-              <input
-                type="radio"
-                id="GOING"
-                name={field.name} // Use the field name for grouping
-                value="GOING"
-                checked={field.state.value === 'GOING'} // Bind checked state
-                onChange={(e) => field.handleChange(e.target.value)} // Update form state on change
-              />
-              <label htmlFor="GOING">Going</label>
-            </div>
+    <div className="min-h-screen bg-gray-50 py-12 px-4 flex items-center justify-center">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          form.handleSubmit()
+        }}
+        className="max-w-md w-full bg-white p-8 rounded-2xl shadow-sm border border-gray-100 space-y-8"
+      >
+        {/* Header section */}
+        <div className="border-b pb-4">
+          <h1 className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-1">Preferences</h1>
+          <h2 className="text-2xl font-extrabold text-gray-900 leading-tight">Update RSVP or Email</h2>
+        </div>
 
-            <div>
-              <input
-                type="radio"
-                id="MAYBE"
-                name={field.name}
-                value="MAYBE"
-                checked={field.state.value === 'MAYBE'}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-              <label htmlFor="MAYBE">Maybe</label>
-            </div>
-            <div>
-              <input
-                type="radio"
-                id="NOT_GOING"
-                name={field.name}
-                value="NOT_GOING"
-                checked={field.state.value === 'NOT_GOING'}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-              <label htmlFor="NOT_GOING">Not Going</label>
-            </div>
+        <div className="space-y-6">
+          {/* Email Field - Uses your updated TextField internally */}
+          <form.AppField
+            name="email"
+            children={(field) => <field.TextField label="Email Address" />}
+          />
 
-            {/* Display potential errors */}
-            {field.state.meta.errors ? (
-                <em>{field.state.meta.errors.join(', ')}</em>
-            ) : null}
-          </div>
-        )}
-      />
+          {/* Status Radio Group */}
+          <form.Field
+            name="status"
+            children={(field) => (
+              <div className="space-y-3">
+                <label className="text-sm font-semibold text-gray-700">Will you be attending?</label>
+                <div className="grid grid-cols-1 gap-2">
+                  {[
+                    { id: 'GOING', label: 'Going' },
+                    { id: 'MAYBE', label: 'Maybe' },
+                    { id: 'NOT_GOING', label: 'Not Going' }
+                  ].map((option) => (
+                    <label 
+                      key={option.id}
+                      className={`
+                        flex items-center px-4 py-3 rounded-xl border cursor-pointer transition-all
+                        ${field.state.value === option.id 
+                          ? 'bg-blue-50 border-blue-600 ring-1 ring-blue-600' 
+                          : 'bg-white border-gray-200 hover:bg-gray-50'
+                        }
+                      `}
+                    >
+                      <input
+                        type="radio"
+                        className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                        name={field.name}
+                        value={option.id}
+                        checked={field.state.value === option.id}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                      />
+                      <span className={`ml-3 text-sm font-bold ${field.state.value === option.id ? 'text-blue-700' : 'text-gray-600'}`}>
+                        {option.label}
+                      </span>
+                    </label>
+                  ))}
+                </div>
 
-      <form.AppForm>
-        <form.SubscribeButton label="Submit" />
-      </form.AppForm>
-    </form>
+                {/* Error Message Styling */}
+                {field.state.meta.errors && (
+                  <em className="text-xs font-medium text-red-500 mt-1 block">
+                    {field.state.meta.errors.join(', ')}
+                  </em>
+                )}
+              </div>
+            )}
+          />
+        </div>
+
+        {/* Form Submission */}
+        <div className="pt-4">
+          <form.AppForm>
+            <form.SubscribeButton label="Save Changes" />
+          </form.AppForm>
+        </div>
+      </form>
+    </div>
   )
 }

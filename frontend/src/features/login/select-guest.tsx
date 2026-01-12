@@ -37,23 +37,27 @@ export const SelectGuest = () => {
 
   console.log(data)
   return (
-    <div>
-      <h1>Already RSVP'd?</h1>
-      <div>
-        <label>
-          
-          <select value={guest} onChange={handleChange}>
-            <option value="">-----</option>
-            {data.map((guest: Guest) => {
-              return (
-                <option value={guest.id}>{guest.name}</option>
-              )
-            })}
-          </select>
-        </label>
-      </div>
-      <div>
-        <button onClick={handleSubmit}>Select</button>
+    <div className="bg-gray-100/50 p-8 rounded-2xl border border-dashed border-gray-300">
+      <h1 className="text-lg font-bold text-gray-800 mb-4 text-center">Already RSVP'd?</h1>
+      <div className="flex flex-col gap-3">
+        <select 
+          value={guest} 
+          onChange={handleChange}
+          className="w-full p-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-gray-400 outline-none transition"
+        >
+          <option value="">Select your name...</option>
+          {data.map((g: Guest) => (
+            <option key={g.id} value={g.id}>{g.name}</option>
+          ))}
+        </select>
+        
+        <button 
+          onClick={handleSubmit}
+          disabled={!guest}
+          className="w-full bg-gray-800 text-white font-bold py-3 rounded-xl hover:bg-black transition disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Continue as Guest
+        </button>
       </div>
     </div>
   )

@@ -1,47 +1,40 @@
 import { CreateGuest } from './create-guest';
 import { SelectGuest } from './select-guest';
-
 import { getParty } from '../../hooks/party';
-
-// interface LoginProps {
-//     onLoginSuccess: (id: string) => void;
-// }{ onLoginSuccess }: LoginProps
 
 export const Login = () => {
   const { data, isLoading, error } = getParty();
-  if (isLoading) {
-    return(
-      <div>
-        Loading...
-      </div>
-    )
-  }
-  if (error) {
-    return (
-      <div>
-        Error {error.message}
-      </div>
-    )
-  }
-  if (data === undefined) {
-    return (
-      <div>
-        Failed to get data
-      </div>
-    )
-  }
+  
+  if (isLoading) return <div className="flex justify-center p-20 animate-pulse text-gray-500">Loading party details...</div>;
+  if (error || !data) return <div className="p-6 text-red-600 bg-red-50 rounded-lg m-4">Error: {error?.message || "Data missing"}</div>;
+
   return (
-    <div>
-      <div>
-          <h1>about</h1>
-          <h2>{data.Title}</h2>
-          <div>{data.Description}</div>
-          <div>Date: {data.Date}</div>
-          <div>Time: {data.Time}</div>
-          <div>Address: {data.Address}</div>
+    <div className="min-h-screen bg-gray-50 py-12 px-4">
+      <div className="max-w-2xl mx-auto space-y-8">
+        
+        {/* Event Hero Section */}
+        <section className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
+          <h1 className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-2">The Event</h1>
+          <h2 className="text-3xl font-extrabold text-gray-900 mb-4">{data.Title}</h2>
+          <p className="text-gray-600 mb-6">{data.Description}</p>
+          <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500 font-medium">
+            <span>📅 {data.Date}</span>
+            <span>⏰ {data.Time}</span>
+            <span className="hidden sm:inline">|</span>
+            <span>📍 {data.Address}</span>
+          </div>
+        </section>
+
+        {/* Action Sections */}
+        <div className="grid grid-cols-1 gap-8">
+          <CreateGuest />
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-gray-200"></span></div>
+            <div className="relative flex justify-center text-xs uppercase"><span className="bg-gray-50 px-2 text-gray-400 font-bold">Or</span></div>
+          </div>
+          <SelectGuest />
+        </div>
       </div>
-      <CreateGuest />
-      <SelectGuest />
     </div>
-  )
+  );
 }

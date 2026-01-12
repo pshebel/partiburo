@@ -42,21 +42,36 @@ export const Post = () => {
   })
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault()
-        form.handleSubmit()
-      }}
-    >
-      <h1>Create Post</h1>
-      <form.AppField
-        name="body"
-        children={(field) => <field.TextArea label="Body" />}
-      />
+    <div className="min-h-screen bg-gray-50 py-12 px-4 flex items-center justify-center">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          form.handleSubmit()
+        }}
+        className="max-w-xl w-full bg-white p-8 rounded-2xl shadow-sm border border-gray-100 space-y-6"
+      >
+        <div className="border-b pb-4 mb-2">
+          <h1 className="text-xs font-bold uppercase tracking-widest text-purple-600 mb-1">Community</h1>
+          <h2 className="text-2xl font-extrabold text-gray-900">Create Post</h2>
+        </div>
 
-      <form.AppForm>
-        <form.SubscribeButton label="Submit" />
-      </form.AppForm>
-    </form>
+        <div className="space-y-4">
+          <form.AppField
+            name="body"
+            children={(field) => (
+              <field.TextArea 
+                label="What's on your mind?" 
+              />
+            )}
+          />
+        </div>
+
+        <div className="pt-2">
+          <form.AppForm>
+            <form.SubscribeButton label="Post to Board" />
+          </form.AppForm>
+        </div>
+      </form>
+    </div>
   )
 }

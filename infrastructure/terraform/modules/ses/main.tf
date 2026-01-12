@@ -33,7 +33,10 @@ resource "aws_iam_policy" "ses_send_policy" {
           "ses:SendRawEmail"
         ]
         # Resource = "*" 
-        Resource = "arn:aws:ses:us-east-1:432883629663:identity/partiburo.com"
+        Resource = [
+            "arn:aws:ses:us-east-1:432883629663:identity/*",
+            "arn:aws:ses:us-east-1:432883629663:configuration-set/*"
+        ]
       }
     ]
   })
