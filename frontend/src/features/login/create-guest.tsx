@@ -42,7 +42,7 @@ export const CreateGuest = () => {
       onSubmit={(e) => { e.preventDefault(); form.handleSubmit(); }}
       className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100"
     >
-      <h1 className="text-xl font-bold text-gray-900 mb-6">RSVP / Identify Yourself</h1>
+      <h1 className="text-xl font-bold text-gray-900 mb-6">RSVP</h1>
       
       <div className="space-y-5">
         <form.AppField
@@ -59,8 +59,7 @@ export const CreateGuest = () => {
           name="email"
           children={(field) => (
             <div className="flex flex-col gap-1">
-               <label className="text-sm font-semibold text-gray-700">Email (Optional)</label>
-               <field.TextField className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="To receive updates" />
+               <field.TextField className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition" label="Email (optional)" placeholder="Enter an email if you wish to receive alerts" />
             </div>
           )}
         />

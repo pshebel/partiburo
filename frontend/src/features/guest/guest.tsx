@@ -61,7 +61,7 @@ export const Guest = () => {
           {/* Email Field - Uses your updated TextField internally */}
           <form.AppField
             name="email"
-            children={(field) => <field.TextField label="Email Address" />}
+            children={(field) => <field.TextField label="Email (optional)" placeholder="Enter an email if you wish to receive alerts" />}
           />
 
           {/* Status Radio Group */}

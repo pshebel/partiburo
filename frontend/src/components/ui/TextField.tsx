@@ -1,7 +1,7 @@
 import { useStore } from '@tanstack/react-form'
 import { useFieldContext } from '../../hooks/form-context.tsx'
 
-export default function TextField({ label }: { label: string }) {
+export default function TextField({ label, placeholder }: { label: string; placeholder?: string }) {
   const field = useFieldContext<string>()
   const errors = useStore(field.store, (state) => state.meta.errors)
 
@@ -12,6 +12,7 @@ export default function TextField({ label }: { label: string }) {
           {label}
         </div>
         <input
+          placeholder={placeholder}
           className="w-full p-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder:text-gray-400 shadow-sm"
           value={field.state.value ?? ''}
           onChange={(e) => field.handleChange(e.target.value)}
