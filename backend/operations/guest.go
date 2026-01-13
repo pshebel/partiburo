@@ -5,6 +5,7 @@ import (
 	"log"
 	"strconv"
 	"database/sql"
+	"strings"
 
 	"github.com/pshebel/partiburo/backend/models"
 	"github.com/pshebel/partiburo/backend/utils"
@@ -66,6 +67,8 @@ func CreateGuest(guest models.GuestRequest) (models.GuestResponse, error) {
 		return resp, nil
 	}
 
+	guest.Email = strings.TrimSpace(guest.Email)
+
 	if guest.Email != "" && utils.IsValidEmail(guest.Email) {
 		_, err := notifications.ConfirmEmail(guest.Email)
 		if err != nil {
@@ -121,6 +124,7 @@ func UpdateGuest(guest models.UpdateGuestRequest) (models.Guest, error) {
 		}
 	}
 
+	guest.Email = strings.TrimSpace(guest.Email)
 	if guest.Email != "" && utils.IsValidEmail(guest.Email) {
 		_, err := notifications.ConfirmEmail(guest.Email)
 		if err != nil {

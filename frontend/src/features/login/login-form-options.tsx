@@ -1,4 +1,5 @@
 import { formOptions } from '@tanstack/react-form'
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export const loginFormOptions = formOptions({
   defaultValues: {
@@ -12,6 +13,13 @@ export const loginFormOptions = formOptions({
         fields: {},
       } as {
         fields: Record<string, string>
+      }
+      if (value.email && !emailRegex.test(value.email)) {
+        return {
+          fields: {
+            email: 'Please enter a valid email address',
+          },
+        }
       }
       if (!value.name ) {
         errors.fields.name = 'Name is required'
