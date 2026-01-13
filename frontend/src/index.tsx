@@ -2,8 +2,8 @@ import * as React from 'react'
 import './index.css'
 import { createRoot } from 'react-dom/client'
 
-import { TanStackDevtools } from '@tanstack/react-devtools'
-import { formDevtoolsPlugin } from '@tanstack/react-form-devtools'
+// import { TanStackDevtools } from '@tanstack/react-devtools'
+// import { formDevtoolsPlugin } from '@tanstack/react-form-devtools'
 import {
   QueryClient,
   QueryClientProvider,
@@ -20,10 +20,10 @@ createRoot(rootElement).render(
     <QueryClientProvider client={queryClient}>
       <App />
     </QueryClientProvider>
-
+{/* 
     <TanStackDevtools
       config={{ hideUntilHover: true }}
       plugins={[formDevtoolsPlugin()]}
-    />
+    /> */}
   </React.StrictMode>,
 )

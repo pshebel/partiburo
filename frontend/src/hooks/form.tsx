@@ -1,10 +1,9 @@
 import { createFormHook } from '@tanstack/react-form'
-import { lazy } from 'react'
+// import { lazy } from 'react'
 import { fieldContext, formContext, useFormContext } from './form-context.tsx'
 
-const TextField = lazy(() => import('../components/ui/TextField.tsx'))
-const TextArea = lazy(() => import('../components/ui/TextArea.tsx'))
-
+import TextField from '../components/ui/TextField.tsx'
+import TextArea from '../components/ui/TextArea.tsx'
 
 function SubscribeButton({ label }: { label: string }) {
   const form = useFormContext()

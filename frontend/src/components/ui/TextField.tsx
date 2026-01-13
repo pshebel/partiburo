@@ -13,7 +13,7 @@ export default function TextField({ label }: { label: string }) {
         </div>
         <input
           className="w-full p-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder:text-gray-400 shadow-sm"
-          value={field.state.value}
+          value={field.state.value ?? ''}
           onChange={(e) => field.handleChange(e.target.value)}
           onBlur={field.handleBlur}
         />
