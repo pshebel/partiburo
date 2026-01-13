@@ -14,12 +14,13 @@ import (
 
 
 func GetGuests() ([]models.Guest, error) {
+	log.Println("GetGuests")
 	guests := []models.Guest{}
 	party_id := 0
 
 	db, err := database.GetDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return guests, nil
 	}
 
@@ -27,7 +28,7 @@ func GetGuests() ([]models.Guest, error) {
 	
 	rows, err := db.Query(guestsQuery, party_id)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return guests, err
 	}
 	defer rows.Close()
@@ -55,19 +56,20 @@ func GetGuests() ([]models.Guest, error) {
 
 
 func CreateGuest(guest models.GuestRequest) (models.GuestResponse, error) {
+	log.Println("CreateGuest")
 	resp := models.GuestResponse{}
 	party_id := 0
 
 	db, err := database.GetDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return resp, nil
 	}
 
 	if guest.Email != "" && utils.IsValidEmail(guest.Email) {
 		_, err := notifications.ConfirmEmail(guest.Email)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 			return resp, nil
 		}
 	}
@@ -76,13 +78,13 @@ func CreateGuest(guest models.GuestRequest) (models.GuestResponse, error) {
 	guestQuery := `INSERT INTO guests (name, email, status, party_id) VALUES (?, ?, ?, ?)`
 	res, err := db.Exec(guestQuery, guest.Name, guest.Email, guest.Status, party_id)
     if err != nil {
-		log.Fatal(err)
+		log.Println(err)
         return resp, nil
     }
 
     id, err := res.LastInsertId()
     if err != nil {
-		log.Fatal(err)
+		log.Println(err)
         return resp, err
     }
 
@@ -91,18 +93,19 @@ func CreateGuest(guest models.GuestRequest) (models.GuestResponse, error) {
 }
 
 func UpdateGuest(guest models.UpdateGuestRequest) (models.Guest, error) {
+	log.Println("UpdateGuest")
 	resp := models.Guest{}
 	party_id := 0
 
 	db, err := database.GetDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return resp, nil
 	}
 
 	tx, err := db.Begin()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return resp, err
 	}
 
@@ -113,7 +116,7 @@ func UpdateGuest(guest models.UpdateGuestRequest) (models.Guest, error) {
 		_, err := db.Exec(query, guest.Status, party_id, guest.ID)
 		if err != nil {
 			tx.Rollback()
-			log.Fatal(err)
+			log.Println(err)
 			return resp, nil
 		}
 	}
@@ -122,7 +125,7 @@ func UpdateGuest(guest models.UpdateGuestRequest) (models.Guest, error) {
 		_, err := notifications.ConfirmEmail(guest.Email)
 		if err != nil {
 			tx.Rollback()
-			log.Fatal(err)
+			log.Println(err)
 			return resp, nil
 		}
 
@@ -130,7 +133,7 @@ func UpdateGuest(guest models.UpdateGuestRequest) (models.Guest, error) {
 		_, err = db.Exec(query, guest.Email, party_id, guest.ID)
 		if err != nil {
 			tx.Rollback()
-			log.Fatal(err)
+			log.Println(err)
 			return resp, nil
 		}
 	}

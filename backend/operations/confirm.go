@@ -8,17 +8,18 @@ import (
 )
 
 func CreateConfirm(req models.ConfirmRequest) (models.Response, error) {
+	log.Println("CreateConfirm")
 	resp := models.Response{}
 	db, err := database.GetDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return resp, nil
 	}
 
 	query := `UPDATE whitelist SET confirmed=true WHERE email=? AND passcode=?`
 	_, err = db.Exec(query, req.Email, req.Passcode)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return resp, nil
 	}
 

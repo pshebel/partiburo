@@ -12,7 +12,7 @@ import (
 func init() {
 	db, err := sql.Open("sqlite3", env.DB)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	defer db.Close()
 

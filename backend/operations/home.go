@@ -9,13 +9,14 @@ import (
 )
 
 func GetHome() (models.Home, error) {
+	log.Println("GetHome")
 	home := models.Home{}
 
 	party_id := 0
 
 	db, err := database.GetDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return home, err
 	}
 	
@@ -23,14 +24,14 @@ func GetHome() (models.Home, error) {
 	row := db.QueryRow(partyQuery, party_id)
 	err = row.Scan(&home.Date, &home.Time, &home.Address, &home.Title, &home.Description)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return home, err
 	}
 
 	announcementsQuery := `SELECT header, body, created_at FROM announcements where party_id = $1`
 	rows, err := db.Query(announcementsQuery, party_id)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return home, err
 	}
 	defer rows.Close()
@@ -54,7 +55,7 @@ func GetHome() (models.Home, error) {
 
 	rows, err = db.Query(guestsQuery, party_id)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return home, err
 	}
 	defer rows.Close()
@@ -92,7 +93,7 @@ func GetHome() (models.Home, error) {
 
 	rows, err = db.Query(postsQuery, party_id)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return home, err
 	}
 	defer rows.Close()

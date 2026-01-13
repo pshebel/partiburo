@@ -11,6 +11,6 @@ func main() {
 	srv := server.GetServer()
 	err := srv.ListenAndServe()
 	if err != nil {
-		log.Fatal("Server failed to start:", err)
+		log.Println("Server failed to start:", err)
 	}
 }

@@ -18,7 +18,7 @@ func init() {
 	ctx := context.Background()
 	cfg, err := config.LoadDefaultConfig(ctx, config.WithRegion(env.AwsRegion))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 	Client = sesv2.NewFromConfig(cfg)

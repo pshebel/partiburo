@@ -10,16 +10,17 @@ import (
 
 
 func CreateUnsubscribe(req models.Unsubscribe) (models.Response, error) {
+	log.Println("CreateUnsubscribe")
 	resp := models.Response{}
 	db, err := database.GetDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return resp, nil
 	}
 
 	tx, err := db.Begin()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return resp, err
 	}
 
@@ -30,7 +31,7 @@ func CreateUnsubscribe(req models.Unsubscribe) (models.Response, error) {
 		_, err := tx.Exec(query, req.Email)
 		if err != nil {
 			tx.Rollback()
-			log.Fatal(err)
+			log.Println(err)
 			return resp, err
 		}
 
@@ -38,7 +39,7 @@ func CreateUnsubscribe(req models.Unsubscribe) (models.Response, error) {
 		_, err = tx.Exec(blacklist, req.Email)
 		if err != nil {
 			tx.Rollback()
-			log.Fatal(err)
+			log.Println(err)
 			return resp, err
 		}
 		resp.Code = 200
@@ -50,7 +51,7 @@ func CreateUnsubscribe(req models.Unsubscribe) (models.Response, error) {
 	_, err = tx.Exec(query, req.Email, req.PartyId)
 	if err != nil {
 		tx.Rollback()
-		log.Fatal(err)
+		log.Println(err)
 		return resp, err
 	}
 	resp.Code = 200

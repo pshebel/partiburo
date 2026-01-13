@@ -18,6 +18,6 @@ var (
 
 func init() {
 	if !utils.IsValidEmail(AwsSender) {
-		log.Fatal("invalid email")
+		log.Println("invalid email")
 	}
 }

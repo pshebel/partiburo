@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	"log"
 	"database/sql"
 
@@ -12,7 +11,7 @@ import (
 func init() {
 	db, err := sql.Open("sqlite3", env.DB)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	defer db.Close()
 
@@ -21,6 +20,5 @@ func init() {
 }
 
 func GetDB() (*sql.DB, error) {
-	fmt.Println(env.DB)
 	return sql.Open("sqlite3", env.DB)
 }

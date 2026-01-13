@@ -28,7 +28,7 @@ func sendBulk(recipients []Reminder) {
 	ctx := context.Background()
 	cfg, err := config.LoadDefaultConfig(ctx, config.WithRegion(env.AwsRegion))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 	client := sesv2.NewFromConfig(cfg)
@@ -62,7 +62,7 @@ func sendBulk(recipients []Reminder) {
 		// Send the email
 		_, err := client.SendEmail(ctx, input)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 			return
 		}
 
@@ -72,7 +72,7 @@ func sendBulk(recipients []Reminder) {
 func main() {
 	db, err := database.GetDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return 
 	}
 	party_id := 0
@@ -95,7 +95,7 @@ func main() {
 	`
 	rows, err := db.Query(query, party_id)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 	defer rows.Close()

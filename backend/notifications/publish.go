@@ -13,10 +13,11 @@ import (
 )
 
 func PublishEmail(email, subject, body string) error {
+	log.Println("PublishEmail")
 	ctx := context.Background()
 	cfg, err := config.LoadDefaultConfig(ctx, config.WithRegion(env.AwsRegion))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return err
 	}
 	client := sesv2.NewFromConfig(cfg)
@@ -47,7 +48,7 @@ func PublishEmail(email, subject, body string) error {
 	// Send the email
 	_, err = client.SendEmail(ctx, input)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return err
 	}
 	return nil
