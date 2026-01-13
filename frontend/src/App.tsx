@@ -7,13 +7,14 @@ import {Login} from './features/login/login'
 import { Unsubscribe } from './features/unsubscribe/unsubscribe'
 import { UnsubscribeAll } from './features/unsubscribeAll/unsubscribeAll'
 import { Confirm } from './features/confirm/confirm'
+import { FullPageLoader } from './components/ui/FullPageLoader'
 
 import {ProtectedRoute} from './components/protected-route'
 
 export default function App() {
   return (
     <BrowserRouter>
-        <Suspense fallback={<p>Loading...</p>}>
+        <Suspense fallback={<FullPageLoader />}>
           <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/confirm/:email/:passcode" element={<Confirm />} />
