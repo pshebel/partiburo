@@ -89,7 +89,7 @@ func UpdatePartyHandler(w http.ResponseWriter, r *http.Request) {
         })
         return
     }
-	var req models.PartyRequest
+	var req models.Party
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		resp := models.Response{

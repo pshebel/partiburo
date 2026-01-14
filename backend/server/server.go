@@ -26,11 +26,10 @@ func init() {
 
 	r.HandleFunc("/api/party", transport.CreatePartyHandler).Methods("POST")
 	r.HandleFunc("/api/party/{code}", transport.GetPartyHandler).Methods("GET")
-	r.HandleFunc("/api/party/{code}", transport.UpdatePartyHandler).Methods("PUT")
 
 	r.HandleFunc("/api/post/{code}", transport.CreatePostHandler).Methods("POST")
-	r.HandleFunc("/api/post/{code}", transport.UpdatePostHandler).Methods("PUT")
-	r.HandleFunc("/api/post/{code}", transport.DeletePostHandler).Methods("DELETE")
+	// r.HandleFunc("/api/post/{code}", transport.UpdatePostHandler).Methods("PUT")
+	// r.HandleFunc("/api/post/{code}", transport.DeletePostHandler).Methods("DELETE")
 
 	r.HandleFunc("/api/guest/{code}", transport.CreateGuestHandler).Methods("POST")
 	r.HandleFunc("/api/guest/{code}", transport.UpdateGuestHandler).Methods("PUT")
@@ -38,6 +37,10 @@ func init() {
 
 	r.HandleFunc("/api/unsubscribe", transport.CreateUnsubscribeHandler).Methods("POST")
 	r.HandleFunc("/api/confirm", transport.CreateConfirmHandler).Methods("POST")
+
+	// admin
+	r.HandleFunc("/api/admin/party/{code}", transport.UpdatePartyHandler).Methods("PUT")
+
 
 	fmt.Println(env.AllowedOrigins)
 	cors := handlers.CORS(

@@ -139,3 +139,25 @@ func CreateParty(req models.PartyRequest) (models.PartyResponse, error) {
 	return resp, nil
 
 }
+
+
+func UpdateParty(code string, req models.Party) (models.Response, error) {
+	log.Println("UpdateParty")
+	resp := models.Response{}
+
+	db, err := database.GetDB()
+	if err != nil {
+		log.Println(err)
+		return resp, err
+	}
+
+	query := `UPDATE party SET title=?, description=?, date=?, time=?, address=? WHERE admin_code=?`
+	_, err = db.Exec(query, req.Title, req.Description, req.Date, req.Time, req.Address)
+	if err != nil {
+		log.Println(err)
+		return resp, err
+	}
+
+	resp.Code = 200
+	return resp, nil
+}

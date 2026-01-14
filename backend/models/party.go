@@ -20,7 +20,6 @@ type LoginResponse struct {
 	Token	string
 }
 
-
 type Home struct {
 	ID				string
 	Title			string
