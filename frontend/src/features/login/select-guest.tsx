@@ -7,11 +7,16 @@ import { createGuest } from '../../hooks/identity';
 import {Guest} from '../../interfaces/party';
 import { useNavigate } from 'react-router-dom'
 
-export const SelectGuest = () => {
+interface SelectGuestProps {
+  code: string
+}
+
+
+export const SelectGuest = ({code}: SelectGuestProps) => {
   const navigate = useNavigate()
 
   const [guest, setGuest] = useState('');
-  const { data, isLoading, error } = getGuests();
+  const { data, isLoading, error } = getGuests(code);
 
   if (isLoading) {
     return (<></>)
@@ -27,8 +32,8 @@ export const SelectGuest = () => {
     if (guest === '') {
       return
     }
-    createGuest(guest)
-    navigate('/')
+    createGuest(code, guest)
+    navigate(`/${code}`)
   }
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {

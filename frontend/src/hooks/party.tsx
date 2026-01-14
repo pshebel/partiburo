@@ -1,13 +1,29 @@
-import { useQuery, UseQueryResult, useMutation } from '@tanstack/react-query';
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
-import { Party } from '../interfaces/party';
+import { Party, TitleRequest, TitlesResponse } from '../interfaces/party';
 
 
-export const getParty = (): UseQueryResult<Party> => {
+export const getTitles = (req: TitleRequest): UseQueryResult<TitlesResponse> => {
+    return useQuery({
+        queryKey: ['titles'],
+        queryFn: async (): Promise<TitlesResponse> =>{
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/titles`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(req),
+            });
+            return response.json();
+        }
+    })
+}
+
+export const getParty = (code: string): UseQueryResult<Party> => {
     return useQuery({
         queryKey: ['party'],
         queryFn: async (): Promise<Party> => {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/party`);
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/party/${code}`);
             return await response.json()
         }
     })

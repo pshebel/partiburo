@@ -13,6 +13,7 @@ func ConfirmEmail(email string) (bool, error) {
 	log.Println("Confirm email")
 	// check for valid email
 	if email == "" || !utils.IsValidEmail(email) {
+		fmt.Println("invalid email")
 		return false, nil
 	}
 
@@ -47,10 +48,11 @@ func ConfirmEmail(email string) (bool, error) {
 	err = row.Scan(&confirmed)
 	if err != nil && err != sql.ErrNoRows  {
 		log.Println(err)
-		log.Println("already confirmed")
 		return false, err
 	}
 	if err == sql.ErrNoRows {
+		fmt.Println("new email")
+
 		passcode := utils.RandomString()
 		subject := "Confirm your email with Partiburo"
 		message := fmt.Sprintf("To confirm your email, click this link https://partiburo.com/confirm/%s/%s\n\nIf you were not expecting this email, you do not need to take any action", email, passcode)
@@ -61,7 +63,6 @@ func ConfirmEmail(email string) (bool, error) {
 			log.Println(err)
 			return false, nil
 		}
-
 
 		err = PublishEmail(email, subject, message)
 		if err != nil {
@@ -78,7 +79,9 @@ func ConfirmEmail(email string) (bool, error) {
 		}
 		return false, nil
 	}
+	fmt.Println("confirmed: ", confirmed)
 	if !confirmed {
+		fmt.Println("email not confirmed")
 		return false, nil
 	}
 	return true, nil

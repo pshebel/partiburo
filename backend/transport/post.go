@@ -4,11 +4,23 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/mux"
+
 	"github.com/pshebel/partiburo/backend/models"
 	"github.com/pshebel/partiburo/backend/operations"
 )
 
 func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+    code := vars["code"]
+    if code == "" {
+        w.WriteHeader(http.StatusBadRequest)
+        json.NewEncoder(w).Encode(models.Response{
+            Code:    400,
+            Message: "missing code",
+        })
+        return
+    }
 	var req models.PostRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
@@ -20,7 +32,7 @@ func CreatePostHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-	post, err := operations.CreatePost(req)
+	post, err := operations.CreatePost(code, req)
 	if err != nil {
 		resp := models.Response{
 			Code: 500,

@@ -5,7 +5,12 @@ import { useNavigate } from 'react-router-dom'
 import { createGuest } from '../../hooks/identity';
 import { GuestResponse } from '../../interfaces/response.js'
 
-export const CreateGuest = () => {
+
+interface CreateGuestProps {
+  code: string
+}
+
+export const CreateGuest = ({code}: CreateGuestProps) => {
   const navigate = useNavigate()
   const form = useAppForm({
     ...loginFormOptions,
@@ -19,7 +24,7 @@ export const CreateGuest = () => {
 
   const saveUserMutation = useMutation({
     mutationFn: async (req: { name: string, email: string, status: string }) => {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/guest`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/guest/${code}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -29,8 +34,8 @@ export const CreateGuest = () => {
         return response.json() as Promise<Response>;
     },
     onSuccess: (data: GuestResponse) => {
-      createGuest(data.id)
-      navigate('/')
+      createGuest(code, data.id)
+      navigate(`/${code}`)
     },
     onError: (err: any) => {
       window.confirm(err)

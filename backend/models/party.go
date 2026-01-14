@@ -4,7 +4,13 @@ import (
 	"time"
 )
 
+type TitlesRequest struct {
+	Codes []string `json:"codes"`
+}
 
+type TitlesResponse struct {
+	Titles map[string]string `json:"titles"`
+}
 
 type LoginRequest struct {
 	Password	string
@@ -31,6 +37,7 @@ type Home struct {
 
 type Party struct {
 	ID				string
+	AdminEmail		string
 	Title			string
 	Description		string
 	Date			string
@@ -42,6 +49,7 @@ type Party struct {
 
 type PartyRequest struct {
 	Title		string	`json:"title"`
+	AdminEmail	string 	`json:"admin_email"`
 	Date		string	`json:"date"`
 	Time		string	`json:"time"`
 	Address		string	`json:"address"`

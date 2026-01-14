@@ -1,10 +1,18 @@
 import { getHome } from '../../hooks/home';
 import { getGuest } from '../../hooks/identity';
-import { Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 
 export const Home = () => {
-    const { data, isLoading, error } = getHome();
-    const guest_id = getGuest();
+    const navigate = useNavigate()
+    const { code } = useParams();
+    if (code === undefined) {
+        navigate('/')
+    }
+    const { data, isLoading, error } = getHome(code);
+    const guest_id = getGuest(code);
+    if (guest_id === null) {
+        navigate(`/login/${code}`)
+    }
 
     // Loading State
     if (isLoading) {
@@ -66,7 +74,7 @@ export const Home = () => {
                                 <span className="text-xs text-gray-500 italic">{g.status}</span>
                             </div>
                             {g.id === guest_id && (
-                                <Link to="/guest" className="text-xs bg-white border px-3 py-1 rounded hover:bg-gray-100 transition shadow-sm">
+                                <Link to={`/${code}/guest`} className="text-xs bg-white border px-3 py-1 rounded hover:bg-gray-100 transition shadow-sm">
                                     Edit Profile
                                 </Link>
                             )}
@@ -79,7 +87,7 @@ export const Home = () => {
             <section>
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-xs font-bold uppercase tracking-widest text-purple-600">Community Posts</h1>
-                    <Link to="/post" className="bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-purple-700 transition">
+                    <Link to={`/post/${code}`} className="bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-purple-700 transition">
                         + Create Post
                     </Link>
                 </div>

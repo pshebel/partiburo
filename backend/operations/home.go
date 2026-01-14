@@ -8,7 +8,7 @@ import (
 	"github.com/pshebel/partiburo/backend/database"
 )
 
-func GetHome() (models.Home, error) {
+func GetHome(code string) (models.Home, error) {
 	log.Println("GetHome")
 	home := models.Home{}
 
@@ -20,9 +20,9 @@ func GetHome() (models.Home, error) {
 		return home, err
 	}
 	
-	partyQuery := `SELECT date, time, address, title, description FROM party WHERE id = $1`
-	row := db.QueryRow(partyQuery, party_id)
-	err = row.Scan(&home.Date, &home.Time, &home.Address, &home.Title, &home.Description)
+	partyQuery := `SELECT id, date, time, address, title, description FROM party WHERE user_code = $1`
+	row := db.QueryRow(partyQuery, code)
+	err = row.Scan(&party_id, &home.Date, &home.Time, &home.Address, &home.Title, &home.Description)
 	if err != nil {
 		log.Println(err)
 		return home, err

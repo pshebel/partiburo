@@ -4,6 +4,9 @@ import { fieldContext, formContext, useFormContext } from './form-context.tsx'
 import TextField from '../components/ui/TextField.tsx'
 import TextArea from '../components/ui/TextArea.tsx'
 import NumberField from '../components/ui/NumberField.tsx'
+import DateField from '../components/ui/DateField.tsx'
+import TimeField from '../components/ui/TimeField.tsx'
+import MultiSelectField from '../components/ui/MultiSelectField.tsx'
 
 function SubscribeButton({ label }: { label: string }) {
   const form = useFormContext()
@@ -40,7 +43,10 @@ export const { useAppForm, withForm, withFieldGroup } = createFormHook({
   fieldComponents: {
     TextField,
     TextArea,
-    NumberField
+    NumberField,
+    DateField,
+    TimeField,
+    MultiSelectField
   },
   formComponents: {
     SubscribeButton,

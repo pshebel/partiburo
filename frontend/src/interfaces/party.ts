@@ -1,12 +1,20 @@
 import {Guest} from './guest'
 
+export interface TitleRequest {
+    codes: string[];
+}
+
+export interface TitlesResponse {
+    titles: Record<string, string>;
+}
+
 export interface Party {
-    Title:          string;
-    Description:    string;
-    Date:           string;
-    Time:           string;
-    Address:        string;
-    CreatedAt:      string;
+    title:          string;
+    description:    string;
+    date:           string;
+    time:           string;
+    address:        string;
+    createdAt:      string;
 }
 
 export interface Home {

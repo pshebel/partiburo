@@ -1,9 +1,15 @@
 import { CreateGuest } from './create-guest';
 import { SelectGuest } from './select-guest';
 import { getParty } from '../../hooks/party';
+import { useParams, useNavigate } from 'react-router-dom';
 
 export const Login = () => {
-  const { data, isLoading, error } = getParty();
+  const navigate = useNavigate()
+  const { code } = useParams();
+  if (code === undefined) {
+      navigate('/')
+  }
+  const { data, isLoading, error } = getParty(code);
   
   if (isLoading) return <div className="flex justify-center p-20 animate-pulse text-gray-500">Loading party details...</div>;
   if (error || !data) return <div className="p-6 text-red-600 bg-red-50 rounded-lg m-4">Error: {error?.message || "Data missing"}</div>;
@@ -27,12 +33,12 @@ export const Login = () => {
 
         {/* Action Sections */}
         <div className="grid grid-cols-1 gap-8">
-          <CreateGuest />
+          <CreateGuest code={code}/>
           <div className="relative">
             <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-gray-200"></span></div>
             <div className="relative flex justify-center text-xs uppercase"><span className="bg-gray-50 px-2 text-gray-400 font-bold">Or</span></div>
           </div>
-          <SelectGuest />
+          <SelectGuest code={code}/>
         </div>
       </div>
     </div>

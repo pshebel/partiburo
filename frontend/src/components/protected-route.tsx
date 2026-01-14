@@ -7,6 +7,11 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+  const navigate = useNavigate()
+  const { code } = useParams();
+  if (code === undefined) {
+      navigate('/')
+  }
   const guest_id = getGuest()
   
   if (guest_id === null || guest_id === "")  {
