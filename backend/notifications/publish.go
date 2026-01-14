@@ -1,6 +1,7 @@
 package notifications
 
 import (
+	"fmt"
 	"log"
 	"context"
 
@@ -14,6 +15,8 @@ import (
 
 func PublishEmail(email, subject, body string) error {
 	log.Println("PublishEmail")
+	msg := fmt.Sprintf("sending email\n\temail: %s\n\tsubject: %s\n\tbody: %s\n", email, subject, body)
+	log.Println(msg)
 	ctx := context.Background()
 	cfg, err := config.LoadDefaultConfig(ctx, config.WithRegion(env.AwsRegion))
 	if err != nil {

@@ -31,7 +31,9 @@ export const Home = () => {
             <section className="border-b pb-8">
                 <h1 className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-2">About</h1>
                 <h2 className="text-4xl font-extrabold text-gray-900 mb-4">{data.Title}</h2>
-                <p className="text-lg text-gray-600 leading-relaxed mb-6">{data.Description}</p>
+                <p className="text-lg text-gray-600 leading-relaxed mb-6 whitespace-pre-line">
+                    {data.Description}
+                </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm font-medium text-gray-500">
                     <div className="flex items-center gap-2">📅 {data.Date}</div>

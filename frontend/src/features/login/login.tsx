@@ -16,7 +16,7 @@ export const Login = () => {
         <section className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
           <h1 className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-2">The Event</h1>
           <h2 className="text-3xl font-extrabold text-gray-900 mb-4">{data.Title}</h2>
-          <p className="text-gray-600 mb-6">{data.Description}</p>
+          <p className="text-gray-600 mb-6 whitespace-pre-line text-left">{data.Description}</p>
           <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500 font-medium">
             <span>📅 {data.Date}</span>
             <span>⏰ {data.Time}</span>

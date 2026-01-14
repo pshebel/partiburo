@@ -37,6 +37,7 @@ func ConfirmEmail(email string) (bool, error) {
 		return false, err
 	}
 	if count > 0 {
+		log.Println("email blacklisted")
 		return false, nil
 	}
 	// check if email is already confirmed
@@ -46,6 +47,7 @@ func ConfirmEmail(email string) (bool, error) {
 	err = row.Scan(&confirmed)
 	if err != nil && err != sql.ErrNoRows  {
 		log.Println(err)
+		log.Println("already confirmed")
 		return false, err
 	}
 	if err == sql.ErrNoRows {
