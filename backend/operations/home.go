@@ -51,7 +51,7 @@ func GetHome() (models.Home, error) {
 	}
 
 	guestsQuery := `
-	SELECT id, name, status, created_at FROM guests WHERE party_id = $1`
+	SELECT id, name, status, plus, created_at FROM guests WHERE party_id = $1`
 
 	rows, err = db.Query(guestsQuery, party_id)
 	if err != nil {
@@ -64,7 +64,7 @@ func GetHome() (models.Home, error) {
 	for rows.Next() {
 		var g models.Guest
 		var status sql.NullString
-		err := rows.Scan(&g.ID, &g.Name, &status, &g.CreatedAt)
+		err := rows.Scan(&g.ID, &g.Name, &status, &g.Plus, &g.CreatedAt)
 		if err != nil {
 			return home, err
 		}
@@ -74,6 +74,11 @@ func GetHome() (models.Home, error) {
 		} else {
 			g.Status = ""
 		}
+
+		if g.Status == "GOING" {
+			home.Going += g.Plus + 1
+		}
+
 		home.Guests = append(home.Guests, g)
 	}
 	err = rows.Err()

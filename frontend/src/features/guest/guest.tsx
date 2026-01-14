@@ -3,12 +3,26 @@ import { loginFormOptions } from './guest-form-options.tsx'
 import {  useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom'
 import { getGuest } from '../../hooks/identity'
+import { getHome } from '../../hooks/home';
 
 export const Guest = () => {
   const navigate = useNavigate()
+  const guest_id = getGuest()
+
+  // This will pull from the cache if Home has already been visited
+  const { data: homeData } = getHome()
+
+  // Find the specific guest record from the home data
+  const currentGuest = homeData?.Guests.find(g => g.id === guest_id)
 
   const form = useAppForm({
     ...loginFormOptions,
+    // Inject the data from the cache into the form defaults
+    defaultValues: {
+      status: currentGuest?.status ?? '',
+      email: '',
+      plus: currentGuest?.plus ?? 0,
+    },
     onSubmit: async ({ formApi, value }) => {
       await saveUserMutation.mutateAsync(value)
 
@@ -17,13 +31,24 @@ export const Guest = () => {
     },
   })
 
+  // const form = useAppForm({
+  //   ...loginFormOptions,
+  //   onSubmit: async ({ formApi, value }) => {
+  //     await saveUserMutation.mutateAsync(value)
+
+  //     // Reset the form to start-over with a clean state
+  //     formApi.reset()
+  //   },
+  // })
+
   const saveUserMutation = useMutation({
-    mutationFn: async (req: { status: string, email: string }) => {
+    mutationFn: async (req: { status: string, email: string, plus: string }) => {
         const guest_id = getGuest()
         const body = {
           id: guest_id,
           status: req.status,
           email: req.email,
+          plus: req.plus
         }
         const response = await fetch(`${import.meta.env.VITE_API_URL}/guest`, {
             method: 'PUT',
@@ -62,6 +87,11 @@ export const Guest = () => {
           <form.AppField
             name="email"
             children={(field) => <field.TextField label="Email (optional)" placeholder="Enter an email if you wish to receive alerts" />}
+          />
+
+          <form.AppField
+            name="plus"
+            children={(field) => <field.NumberField label="Plus One" min={0} max={250} />}
           />
 
           {/* Status Radio Group */}

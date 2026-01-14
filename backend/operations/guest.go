@@ -25,7 +25,7 @@ func GetGuests() ([]models.Guest, error) {
 		return guests, nil
 	}
 
-	guestsQuery := `SELECT id, name, status, created_at FROM guests WHERE party_id = $1`
+	guestsQuery := `SELECT id, name, status, plus, created_at FROM guests WHERE party_id = $1`
 	
 	rows, err := db.Query(guestsQuery, party_id)
 	if err != nil {
@@ -37,7 +37,7 @@ func GetGuests() ([]models.Guest, error) {
 	for rows.Next() {
 		var g models.Guest
 		var status sql.NullString
-		err := rows.Scan(&g.ID, &g.Name, &status, &g.CreatedAt)
+		err := rows.Scan(&g.ID, &g.Name, &status, &g.Plus, &g.CreatedAt)
 		if err != nil {
 			return guests, err
 		}
@@ -78,8 +78,8 @@ func CreateGuest(guest models.GuestRequest) (models.GuestResponse, error) {
 	}
 
 
-	guestQuery := `INSERT INTO guests (name, email, status, party_id) VALUES (?, ?, ?, ?)`
-	res, err := db.Exec(guestQuery, guest.Name, guest.Email, guest.Status, party_id)
+	guestQuery := `INSERT INTO guests (name, email, status, plus, party_id) VALUES (?, ?, ?, ?, ?)`
+	res, err := db.Exec(guestQuery, guest.Name, guest.Email, guest.Status, guest.Plus, party_id)
     if err != nil {
 		log.Println(err)
         return resp, nil
@@ -140,6 +140,14 @@ func UpdateGuest(guest models.UpdateGuestRequest) (models.Guest, error) {
 			log.Println(err)
 			return resp, nil
 		}
+	}
+
+	query := `UPDATE guests SET plus=? WHERE party_id=? AND id=?`
+	_, err = db.Exec(query, guest.Plus, party_id, guest.ID)
+	if err != nil {
+		tx.Rollback()
+		log.Println(err)
+		return resp, nil
 	}
 	
 	return resp, nil

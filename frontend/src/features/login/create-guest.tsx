@@ -63,7 +63,10 @@ export const CreateGuest = () => {
             </div>
           )}
         />
-
+        <form.AppField
+            name="plus"
+            children={(field) => <field.NumberField label="Plus One" min={0} max={250}/>}
+          />
         <form.Field
           name="status"
           children={(field) => (

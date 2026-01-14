@@ -6,6 +6,7 @@ export const loginFormOptions = formOptions({
     name: '',
     email: '',
     status: '',
+    plus: 0,
   },
   validators: {
     onChangeAsync: async ({ value }) => {
@@ -26,6 +27,13 @@ export const loginFormOptions = formOptions({
       }
       if (!value.status) {
         errors.fields.name = 'Status is required'
+      }
+      if (value.plus < 0 || value.plus > 250) {
+        return {
+          fields: {
+            plus: 'Plus one must be positive'
+          }
+        }
       }
       return errors
     },

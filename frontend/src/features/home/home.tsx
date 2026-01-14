@@ -55,7 +55,7 @@ export const Home = () => {
 
             {/* 3. Guests List */}
             <section>
-                <h1 className="text-xs font-bold uppercase tracking-widest text-green-600 mb-6">Guest List</h1>
+                <h1 className="text-xs font-bold uppercase tracking-widest text-green-600 mb-6">Guest List ({data.Going} going)</h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {data.Guests.sort((a,b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)).map((g, i) => (
                         <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">

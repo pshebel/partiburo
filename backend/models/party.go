@@ -23,6 +23,7 @@ type Home struct {
 	Time			string
 	Address			string
 	Announcements	[]Announcement
+	Going			int
 	Guests			[]Guest
 	Posts			[]Post
 	CreatedAt 		time.Time

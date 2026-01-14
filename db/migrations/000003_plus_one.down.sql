@@ -1,0 +1,2 @@
+ALTER TABLE guests
+DROP COLUMN plus;

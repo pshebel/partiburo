@@ -16,6 +16,7 @@ export interface Home {
     Time:           string;
     Address:        string;
     Announcements:  Announcement[];
+    Going:          number;
     Guests:         Guest[];
     Posts:          Post[];
     CreatedAt:      string;

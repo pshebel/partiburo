@@ -1,12 +1,14 @@
 export interface UpdateGuest {
-    ID:         string;
-    Status:     string;
-    Email:      string;
+    id:         string;
+    status:     string;
+    plus:       string;
+    email:      string;
 }
 
 export interface Guest {
     id:         string;
     name:       string;
     status:     string;
+    plus:       string;
     createdAt:  string;
 }
