@@ -35,7 +35,7 @@ func sendBulk(recipients []Reminder) {
 
 	for _, r := range(recipients) {
 		subject := "You have a party coming up!"
-		message := fmt.Sprintf("Hey %s,\nYour %s party is coming up in 3 days.\n\nTo unsubscribe from reminders for this party, visit https://partiburo.com/unsubscribe/%s\nIf you want to unsubscribe from all future emails from partiburo, visit https://partiburo/unsubscribeAll/%s", r.Guest, r.Party, r.Email, r.Email)
+		message := fmt.Sprintf("Hey %s,\nYour %s party is coming up in 3 hours.\n\nTo unsubscribe from reminders for this party, visit https://partiburo.com/unsubscribe/%s\nIf you want to unsubscribe from all future emails from partiburo, visit https://partiburo/unsubscribeAll/%s", r.Guest, r.Party, r.Email, r.Email)
 		input := &sesv2.SendEmailInput{
 			Destination: &types.Destination{
 				ToAddresses: []string{
