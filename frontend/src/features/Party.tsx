@@ -1,7 +1,6 @@
 import { useAppForm } from '../hooks/form.tsx'
 import {  useMutation } from '@tanstack/react-query';
-import { Party } from '../interfaces/party'
-import { Response } from '../interfaces/response'
+import { Party, PartyResponse } from '../interfaces/party'
 import { useNavigate } from 'react-router-dom'
 import { formOptions } from '@tanstack/react-form'
 
@@ -10,7 +9,7 @@ const partyFormOptions = formOptions({
     admin_email: '',
     title: '',
     description: '',
-    location: '',
+    address: '',
     date: '',
     time: '',
     reminders: [],
@@ -74,10 +73,10 @@ export const CreateParty = () => {
                 },
                 body: JSON.stringify(req),
         });
-        return response.json() as Promise<Response>;
+        return response.json() as Promise<PartyResponse>;
     },
     onSuccess: (data) => {
-      navigate('/')
+      navigate(`/${data.code}`)
     },
     onError: (err: any) => {
         window.confirm(err)
@@ -128,10 +127,10 @@ export const CreateParty = () => {
 
         <div>
           <form.AppField
-            name="location"
+            name="address"
             children={(field) => (
               <field.TextField 
-                label="Location" 
+                label="Address" 
               />
             )}
           />
@@ -165,19 +164,15 @@ export const CreateParty = () => {
                 label="reminders"
                 options={[{
                         label: 'day of',
-                        value: 'dayof',
+                        value: 'day_of',
                     },
                     {
                         label: 'day before',
-                        value: 'daybefore',
-                    },
-                    {
-                        label: '3 days before',
-                        value: 'threedaysbefore',
+                        value: 'day_before',
                     },
                     {
                         label: 'week before',
-                        value: 'weekbefore',
+                        value: 'week_before',
                     },
                     {
                       label: 'announcements',

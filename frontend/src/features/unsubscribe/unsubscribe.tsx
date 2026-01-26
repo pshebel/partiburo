@@ -2,7 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { postUnsubscribe } from '../../hooks/unsubscribe'; // Assuming this hook exists based on your pattern
 
 export const Unsubscribe = () => {
-    const { email } = useParams();
+    const { party_code, email_code } = useParams();
 
     // Reusable Error View to keep the component clean
     const ErrorView = ({ message }: { message: string }) => (
@@ -20,11 +20,11 @@ export const Unsubscribe = () => {
         </div>
     );
 
-    if (email === undefined) {
+    if (party_code === undefined || email_code === undefined) {
         return <ErrorView message="We couldn't find an email to unsubscribe. Please report this to support@partiburo.com" />;
     }
 
-    const { data, isLoading, error } = postUnsubscribe(email);
+    const { data, isLoading, error } = postUnsubscribe(party_code, email_code);
 
     if (isLoading) {
         return (
@@ -49,7 +49,7 @@ export const Unsubscribe = () => {
                 </div>
                 <h1 className="text-2xl font-extrabold text-gray-900 mb-2">Unsubscribed</h1>
                 <p className="text-gray-600 mb-8 leading-relaxed">
-                    You have been successfully removed from our list for <span className="font-semibold text-gray-800">{email}</span>.
+                    You have been successfully removed from our mailing list.
                 </p>
                 <Link 
                     to="/" 

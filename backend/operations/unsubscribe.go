@@ -3,6 +3,7 @@ package operations
 
 import (
 	"log"
+	"database/sql"
 
 	"github.com/pshebel/partiburo/backend/models"
 	"github.com/pshebel/partiburo/backend/database"
@@ -25,18 +26,19 @@ func CreateUnsubscribe(req models.Unsubscribe) (models.Response, error) {
 	}
 
 	defer tx.Commit()
+	email_id := 0
+	query := `SELECT id FROM email WHERE code=?`
+	row := tx.QueryRow(query, req.EmailCode)
+	err = row.Scan(&email_id)
+	if err != nil {
+		tx.Rollback()
+		log.Println(err)
+		return resp, err
+	}
 
 	if (req.All) {
-		query := `update guests set email='' where email=?`
-		_, err := tx.Exec(query, req.Email)
-		if err != nil {
-			tx.Rollback()
-			log.Println(err)
-			return resp, err
-		}
-
-		blacklist := `insert into blacklist (email) values (?)`
-		_, err = tx.Exec(blacklist, req.Email)
+		blacklist := `insert into blacklist (email_id) values (?)`
+		_, err = tx.Exec(blacklist, email_id)
 		if err != nil {
 			tx.Rollback()
 			log.Println(err)
@@ -47,9 +49,9 @@ func CreateUnsubscribe(req models.Unsubscribe) (models.Response, error) {
 		return resp, nil
 	}
 
-	query := `update guests set email='' where email=? and party_id=?`
-	_, err = tx.Exec(query, req.Email, req.PartyId)
-	if err != nil {
+	query = `update guests set email_id=NULL from party where guests.email_id=? and party.user_code=?`
+	_, err = tx.Exec(query, email_id, req.PartyCode)
+	if err != nil && err != sql.ErrNoRows{
 		tx.Rollback()
 		log.Println(err)
 		return resp, err

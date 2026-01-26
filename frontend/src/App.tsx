@@ -10,7 +10,8 @@ import { UnsubscribeAll } from './features/unsubscribeAll/unsubscribeAll'
 import { Confirm } from './features/confirm/confirm'
 import { FullPageLoader } from './components/ui/FullPageLoader'
 import { CreateParty } from './features/Party'
-
+import { Announcement } from './features/announcement/announcement'
+import { AdminHome } from './features/Admin'
 import {ProtectedRoute} from './components/protected-route'
 
 export default function App() {
@@ -25,27 +26,13 @@ export default function App() {
               <Route path="/guest/:code" element={<Guest />} />
               <Route path="/post/:code" element={<Post />} />
 
-              {/* 
-              <Route path="/confirm/:email/:passcode" element={<Confirm />} />
-              <Route path="/unsubscribe/:email" element={<Unsubscribe />} />
-              <Route path="/unsubscribeAll/:email" element={<UnsubscribeAll />} />
+              {/* admin */}
+              <Route path="/admin/:code" element={<AdminHome />} />
+              <Route path="/announcement/:code" element={<Announcement />} />
               
-              <Route 
-                path="/guest" 
-                element={
-                  <ProtectedRoute>
-                    <Guest />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/post" 
-                element={
-                  <ProtectedRoute>
-                    <Post />
-                  </ProtectedRoute>
-                } 
-              /> */}
+              <Route path="/confirm/:code/:passcode" element={<Confirm />} />
+              <Route path="/unsubscribe/:party_code/:email_code" element={<Unsubscribe />} />
+              <Route path="/unsubscribeAll/:email_code" element={<UnsubscribeAll />} />
           </Routes>
         </Suspense>
     </BrowserRouter>

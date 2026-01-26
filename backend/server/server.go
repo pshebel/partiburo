@@ -39,6 +39,7 @@ func init() {
 	r.HandleFunc("/api/confirm", transport.CreateConfirmHandler).Methods("POST")
 
 	// admin
+	r.HandleFunc("/api/announcement/{code}", transport.CreateAnnouncementHandler).Methods("POST")
 	r.HandleFunc("/api/admin/party/{code}", transport.UpdatePartyHandler).Methods("PUT")
 
 

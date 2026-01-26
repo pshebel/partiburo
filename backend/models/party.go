@@ -53,6 +53,7 @@ type PartyRequest struct {
 	Time		string	`json:"time"`
 	Address		string	`json:"address"`
 	Description	string	`json:"description"`
+	Reminders 	[]string `json:"reminders"`
 }
 
 
@@ -63,13 +64,8 @@ type Token struct {
 }
 
 type PartyResponse struct {
-	TokenHash	string	`json:"token_hash"`
+	Code	string	`json:"code"`
 }
 
-type Announcement struct {
-	ID 			string
-	Header		string
-	Body		string
-	CreatedAt time.Time
-}
+
 

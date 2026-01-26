@@ -8,6 +8,10 @@ export interface TitlesResponse {
     titles: Record<string, string>;
 }
 
+export interface PartyResponse {
+    code: string;
+}
+
 export interface Party {
     title:          string;
     description:    string;
@@ -31,9 +35,9 @@ export interface Home {
 }
 
 export interface Announcement {
-    Header:     string;
-    Body:       string;
-    CreatedAt:  string;
+    header:     string;
+    body:       string;
+    created_at:  string;
 }
 
 export interface GuestResponse {

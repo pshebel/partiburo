@@ -1,6 +1,6 @@
 package models
 
 type ConfirmRequest struct {
-	Email		string
+	Code		string
 	Passcode	string
 }

@@ -13,8 +13,7 @@ import (
 	"github.com/pshebel/partiburo/backend/env"
 )
 
-func PublishEmail(email, subject, body string) error {
-	log.Println("PublishEmail")
+func sendEmail(email, subject, body string) error {
 	msg := fmt.Sprintf("sending email\n\temail: %s\n\tsubject: %s\n\tbody: %s\n", email, subject, body)
 	log.Println(msg)
 	ctx := context.Background()
@@ -54,5 +53,17 @@ func PublishEmail(email, subject, body string) error {
 		log.Println(err)
 		return err
 	}
+	return nil
+}
+
+func PublishEmail(email, subject, body string) error {
+	log.Println("PublishEmail")
+	if (env.Env == "prod") {
+		return sendEmail(email, subject, body)
+	} else {
+		msg := fmt.Sprintf("printing email\n\temail: %s\n\tsubject: %s\n\tbody: %s\n", email, subject, body)
+		log.Println(msg)
+	}
+	
 	return nil
 }

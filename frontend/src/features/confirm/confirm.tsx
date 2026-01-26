@@ -2,7 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { createConfirm } from '../../hooks/confirm';
 
 export const Confirm = () => {
-    const { email, passcode } = useParams();
+    const { code, passcode } = useParams();
 
     // Helper for error messages to keep the JSX dry
     const ErrorState = ({ message }: { message: string }) => (
@@ -20,11 +20,11 @@ export const Confirm = () => {
         </div>
     );
 
-    if (email === undefined || passcode === undefined) {
+    if (code === undefined || passcode === undefined) {
         return <ErrorState message="Invalid confirmation link. Please report this to support@partiburo.com" />;
     }
 
-    const { data, isLoading, error } = createConfirm(email, passcode);
+    const { data, isLoading, error } = createConfirm(code, passcode);
 
     if (isLoading) {
         return (
@@ -49,7 +49,7 @@ export const Confirm = () => {
                 </div>
                 <h1 className="text-2xl font-extrabold text-gray-900 mb-2">Success!</h1>
                 <p className="text-gray-600 mb-8">
-                    Your email <span className="font-semibold text-gray-800">{email}</span> has been successfully confirmed.
+                    Your email has been successfully confirmed.
                 </p>
                 <Link 
                     to="/" 

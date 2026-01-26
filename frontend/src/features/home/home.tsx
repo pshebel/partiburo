@@ -54,10 +54,10 @@ export const Home = () => {
             <section>
                 <h1 className="text-xs font-bold uppercase tracking-widest text-orange-600 mb-6">Announcements</h1>
                 <div className="space-y-4">
-                    {data.Announcements.sort((a,b) => Date.parse(b.CreatedAt) - Date.parse(a.CreatedAt)).map((a, i) => (
+                    {data.Announcements.sort((a,b) => Date.parse(b.created_at) - Date.parse(a.created_at)).map((a, i) => (
                         <div key={i} className="p-4 bg-orange-50 rounded-xl border border-orange-100">
-                            <h3 className="font-bold text-gray-900">{a.Header}</h3>
-                            <div className="text-gray-700 mt-1">{a.Body}</div>
+                            <h3 className="font-bold text-gray-900">{a.header}</h3>
+                            <div className="text-gray-700 mt-1">{a.body}</div>
                         </div>
                     ))}
                 </div>
@@ -74,7 +74,7 @@ export const Home = () => {
                                 <span className="text-xs text-gray-500 italic">{g.status}</span>
                             </div>
                             {g.id === guest_id && (
-                                <Link to={`/${code}/guest`} className="text-xs bg-white border px-3 py-1 rounded hover:bg-gray-100 transition shadow-sm">
+                                <Link to={`/guest/${code}`} className="text-xs bg-white border px-3 py-1 rounded hover:bg-gray-100 transition shadow-sm">
                                     Edit Profile
                                 </Link>
                             )}

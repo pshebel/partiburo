@@ -87,6 +87,12 @@ func CreateParty(req models.PartyRequest) (models.PartyResponse, error) {
 	log.Println("CreateParty")
 	resp := models.PartyResponse{}
 
+	confirmed, err := notifications.ConfirmEmail(req.AdminEmail) 
+	if err != nil {
+		log.Println(err)
+		return resp, err
+	}
+
 	db, err := database.GetDB()
 	if err != nil {
 		log.Println(err)
@@ -103,19 +109,54 @@ func CreateParty(req models.PartyRequest) (models.PartyResponse, error) {
 	}
 
 	defer tx.Commit()
-	_, err = tx.Exec("INSERT INTO party (admin_email, user_code, admin_code, date, time, address, title, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", req.AdminEmail, userCode, adminCode, req.Date, req.Time, req.Address, req.Title, req.Description)
+	email_id := 0
+	query := `SELECT id FROM email WHERE email=?`
+	row := tx.QueryRow(query, req.AdminEmail)
+	err = row.Scan(&email_id)
 	if err != nil {
 		tx.Rollback()
 		log.Println(err)
 		return resp, err
 	}
 
-	confirmed, err := notifications.ConfirmEmail(req.AdminEmail) 
+	res, err := tx.Exec("INSERT INTO party (admin_email_id, user_code, admin_code, date, time, address, title, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", email_id, userCode, adminCode, req.Date, req.Time, req.Address, req.Title, req.Description)
 	if err != nil {
 		tx.Rollback()
 		log.Println(err)
 		return resp, err
 	}
+
+	party_id, err := res.LastInsertId()
+	if err != nil {
+		tx.Rollback()
+		log.Println(err)
+		return resp, err
+	}
+
+	if (len(req.Reminders) > 0) {
+		var announcements, dayOf, dayBefore, weekBefore bool
+		for _, r := range req.Reminders {
+			switch r {
+			case "day_of":
+				dayOf = true
+			case "day_before":
+				dayBefore = true
+			case "week_before":
+				weekBefore = true
+			case "announcements": 
+				announcements = true
+			}
+		}
+
+		query = `INSERT INTO reminders (party_id, day_of, day_before, week_before, announcements) VALUES (? ,? ,? ,? ,?)`
+		_, err = tx.Exec(query, party_id, dayOf, dayBefore, weekBefore, announcements)
+		if err != nil {
+			tx.Rollback()
+			log.Println(err)
+			return resp, err
+		}
+	} 
+
 
 	subject := fmt.Sprintf("Here are your Partiburo links for %s", req.Title)
 	message := fmt.Sprintf("Guest Link: https://partiburo.com/%s\nAdmin Link: https://partiburo.com/admin/%s\n", userCode, adminCode)
@@ -127,14 +168,14 @@ func CreateParty(req models.PartyRequest) (models.PartyResponse, error) {
 			return resp, err
 		}
 	} else {
-		_, err = tx.Exec("INSERT INTO queue (email, subject, body, sent, retry) VALUES (?, ?, ?, ?, ?)", req.AdminEmail, subject, message, false, "daily")
+		_, err = tx.Exec("INSERT INTO queue (email_id, subject, body, sent, retry) VALUES (?, ?, ?, ?, ?)", email_id, subject, message, false, "daily")
 		if err != nil {
 			tx.Rollback()
 			log.Println(err)
 			return resp, err
 		}
 	}
-
+	resp.Code = userCode
 
 	return resp, nil
 

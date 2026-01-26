@@ -1,3 +1,9 @@
+CREATE TABLE IF NOT EXISTS email (
+	id INTEGER PRIMARY KEY,
+	email TEXT NOT NULL UNIQUE,
+	code TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS party (
 	id INTEGER PRIMARY KEY,
 	date TEXT NOT NULL,
@@ -5,17 +11,26 @@ CREATE TABLE IF NOT EXISTS party (
 	address TEXT NOT NULL,
 	title TEXT NOT NULL,
 	description TEXT NOT NULL,
-	created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+	user_code TEXT NOT NULL DEFAULT '',
+	admin_code TEXT NOT NULL DEFAULT '',
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	admin_email_id INTEGER NOT NULL,
+	FOREIGN KEY (admin_email_id) REFERENCES email(id)
 );
 
 CREATE TABLE IF NOT EXISTS guests (
 	id INTEGER PRIMARY KEY,
-	name TEXT NOT NULL UNIQUE,
+	name TEXT NOT NULL,
+	plus INTEGER DEFAULT 0,
 	status TEXT CHECK(status in ('GOING', 'MAYBE', 'NOT_GOING')),
 	party_id INTEGER NOT NULL,
+	email_id INTEGER,
 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-	FOREIGN KEY (party_id) REFERENCES party(id)
+	FOREIGN KEY (party_id) REFERENCES party(id),
+	FOREIGN KEY (email_id) REFERENCES email(id),
+	UNIQUE (name, party_id)
 );
+
 
 CREATE TABLE IF NOT EXISTS announcements (
 	id INTEGER PRIMARY KEY,
@@ -37,48 +52,48 @@ CREATE TABLE IF NOT EXISTS posts (
 );
 
 
--- CREATE TABLE IF NOT EXISTS party_hash (
--- 	id INTEGER PRIMARY KEY,
--- 	hash TEXT NOT NULL,
--- 	party_id INTEGER NOT NULL,
--- 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
--- 	FOREIGN KEY (party_id) REFERENCES party(id)
--- );
+CREATE TABLE IF NOT EXISTS notifications (
+    id INTEGER PRIMARY KEY,
+    summary TEXT NOT NULL,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	email_id INTEGER NOT NULL,
+	FOREIGN KEY (email_id) REFERENCES email(id)
+);
 
--- CREATE TABLE IF NOT EXISTS party_admin_id (
--- 	id INTEGER PRIMARY KEY,
--- 	hash TEXT NOT NULL,
--- 	party_id INTEGER NOT NULL,
--- 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
--- 	FOREIGN KEY (party_id) REFERENCES party(id)
--- );
+CREATE TABLE IF NOT EXISTS blacklist (
+	id INTEGER PRIMARY KEY,
+    email_id INTEGER NOT NULL UNIQUE,
+	FOREIGN KEY (email_id) REFERENCES email(id)
+);
 
--- CREATE TABLE IF NOT EXISTS party_admin_token (
--- 	id INTEGER PRIMARY KEY,
--- 	token TEXT NOT NULL,
--- 	expiry DATETIME NOT NULL,
--- 	party_id INTEGER NOT NULL,
--- 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
--- 	FOREIGN KEY (party_id) REFERENCES party(id)
--- );
+CREATE TABLE IF NOT EXISTS whitelist (
+	id INTEGER PRIMARY KEY,
+    confirmed BOOLEAN NOT NULL DEFAULT FALSE,
+    passcode TEXT NOT NULL,
+	email_id INTEGER NOT NULL,
+	FOREIGN KEY (email_id) REFERENCES email(id)
+);
 
--- CREATE TABLE IF NOT EXISTS party_guest_id (
--- 	id INTEGER PRIMARY KEY,
--- 	hash TEXT NOT NULL,
--- 	party_id INTEGER NOT NULL,
--- 	guest_id INTEGER NOT NULL,
--- 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
--- 	FOREIGN KEY (party_id) REFERENCES party(id),
--- 	FOREIGN KEY (guest_id) REFERENCES guests(id)
--- );
+CREATE TABLE IF NOT EXISTS queue (
+	id INTEGER PRIMARY KEY,
+    subject TEXT NOT NULL,
+    body TEXT NOT NULL,
+    sent BOOLEAN NOT NULL DEFAULT false,
+    retry TEXT NOT NULL,
+    last_attempt DATETIME,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+	email_id INTEGER NOT NULL,
+	FOREIGN KEY (email_id) REFERENCES email(id)
+);
 
--- CREATE TABLE IF NOT EXISTS party_guest_token (
--- 	id INTEGER PRIMARY KEY,
--- 	token TEXT NOT NULL,
--- 	expiry DATETIME NOT NULL,
--- 	party_id INTEGER NOT NULL,
--- 	guest_id INTEGER NOT NULL,
--- 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
--- 	FOREIGN KEY (party_id) REFERENCES party(id),
--- 	FOREIGN KEY (guest_id) REFERENCES guests(id)
--- );
+
+
+CREATE TABLE IF NOT EXISTS reminders (
+	id INTEGER PRIMARY KEY,
+	party_id INTEGER NOT NULL,
+	announcements BOOLEAN,
+	day_of BOOLEAN,
+	day_before BOOLEAN,
+	week_before BOOLEAN,
+	FOREIGN KEY (party_id) REFERENCES party(id)
+);

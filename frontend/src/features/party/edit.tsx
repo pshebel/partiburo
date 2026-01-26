@@ -173,10 +173,6 @@ export const EditParty = () => {
                         value: 'daybefore',
                     },
                     {
-                        label: '3 days before',
-                        value: 'threedaysbefore',
-                    },
-                    {
                         label: 'week before',
                         value: 'weekbefore',
                     },

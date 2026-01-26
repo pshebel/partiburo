@@ -6,6 +6,9 @@ import (
 	"strconv"
 	"database/sql"
 	"strings"
+	// "errors"
+
+	// "github.com/mattn/go-sqlite3"
 
 	"github.com/pshebel/partiburo/backend/models"
 	"github.com/pshebel/partiburo/backend/utils"
@@ -64,6 +67,7 @@ func CreateGuest(code string, guest models.GuestRequest) (models.GuestResponse, 
 	log.Println("CreateGuest")
 	resp := models.GuestResponse{}
 	party_id := 0
+	email_id := 0
 
 	db, err := database.GetDB()
 	if err != nil {
@@ -79,6 +83,14 @@ func CreateGuest(code string, guest models.GuestRequest) (models.GuestResponse, 
 			log.Println(err)
 			return resp, nil
 		}
+
+		query := `SELECT id FROM email WHERE email=?`
+		row := db.QueryRow(query, guest.Email)
+		err = row.Scan(&email_id)
+		if err != nil {
+			log.Println(err)
+			return resp, err
+		}
 	}
 
 	query := `SELECT id FROM party WHERE user_code=?`
@@ -90,9 +102,17 @@ func CreateGuest(code string, guest models.GuestRequest) (models.GuestResponse, 
 	}
 
 
-	guestQuery := `INSERT INTO guests (name, email, status, plus, party_id) VALUES (?, ?, ?, ?, ?)`
-	res, err := db.Exec(guestQuery, guest.Name, guest.Email, guest.Status, guest.Plus, party_id)
+	
+	guestQuery := `INSERT INTO guests (name, email_id, status, plus, party_id) VALUES (?, ?, ?, ?, ?)`
+	res, err := db.Exec(guestQuery, guest.Name, email_id, guest.Status, guest.Plus, party_id)
     if err != nil {
+		// var sqliteErr sqlite3.Error
+		// if errors.As(err, &sqliteErr) && sqliteErr.ExtendedCode == sqlite3.ErrConstraintUnique {
+		// 	log.Printf("Unique constraint failed: Guest '%s' already exists for this party.\n", guest.Name)
+		// 	resp.Code = 400
+		// 	resp.Message = "This guest is already on the list for this party."
+		// 	return resp, nil
+		// }
 		log.Println(err)
         return resp, nil
     }
@@ -154,8 +174,18 @@ func UpdateGuest(code string, guest models.UpdateGuestRequest) (models.Guest, er
 			return resp, nil
 		}
 
-		query := `UPDATE guests SET email=? WHERE party_id=? AND id=?`
-		_, err = db.Exec(query, guest.Email, party_id, guest.ID)
+		email_id := 0
+		query := `SELECT id FROM email WHERE email=?`
+		row := tx.QueryRow(query, guest.Email)
+		err = row.Scan(&email_id)
+		if err != nil {
+			tx.Rollback()
+			log.Println(err)
+			return resp, err
+		}
+
+		query = `UPDATE guests SET email_id=? WHERE party_id=? AND id=?`
+		_, err = tx.Exec(query, email_id, party_id, guest.ID)
 		if err != nil {
 			tx.Rollback()
 			log.Println(err)

@@ -3,10 +3,10 @@ import { UnsubscribeRequest } from '../interfaces/unsubscribe';
 import { Response } from '../interfaces/response';
 
 
-export const postUnsubscribe = (email: string): UseQueryResult<Response> => {
+export const postUnsubscribe = (party_code: string, email_code: string): UseQueryResult<Response> => {
     const body: UnsubscribeRequest = {
-        party_id: 0,
-        email: email,
+        party_code: party_code,
+        email_code: email_code,
         all: false,
     }
     return useQuery({
@@ -25,10 +25,10 @@ export const postUnsubscribe = (email: string): UseQueryResult<Response> => {
 }
 
 
-export const postUnsubscribeAll = (email: string): UseQueryResult<Response> => {
+export const postUnsubscribeAll = (email_code: string): UseQueryResult<Response> => {
     const body: UnsubscribeRequest = {
-        party_id: 0,
-        email: email,
+        party_code: '',
+        email_code: email_code,
         all: true,
     }
 

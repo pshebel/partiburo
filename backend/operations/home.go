@@ -20,8 +20,8 @@ func GetHome(code string) (models.Home, error) {
 		return home, err
 	}
 	
-	partyQuery := `SELECT id, date, time, address, title, description FROM party WHERE user_code = $1`
-	row := db.QueryRow(partyQuery, code)
+	partyQuery := `SELECT id, date, time, address, title, description FROM party WHERE user_code = ? OR admin_code = ?`
+	row := db.QueryRow(partyQuery, code, code)
 	err = row.Scan(&party_id, &home.Date, &home.Time, &home.Address, &home.Title, &home.Description)
 	if err != nil {
 		log.Println(err)
