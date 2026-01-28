@@ -8,7 +8,7 @@ import (
 	"github.com/pshebel/partiburo/backend/database"
 )
 
-func GetHome() (models.Home, error) {
+func GetHome(code string) (models.Home, error) {
 	log.Println("GetHome")
 	home := models.Home{}
 
@@ -20,15 +20,15 @@ func GetHome() (models.Home, error) {
 		return home, err
 	}
 	
-	partyQuery := `SELECT date, time, address, title, description FROM party WHERE id = $1`
-	row := db.QueryRow(partyQuery, party_id)
-	err = row.Scan(&home.Date, &home.Time, &home.Address, &home.Title, &home.Description)
+	partyQuery := `SELECT id, date, time, address, title, description FROM party WHERE user_code = ? OR admin_code = ?`
+	row := db.QueryRow(partyQuery, code, code)
+	err = row.Scan(&party_id, &home.Date, &home.Time, &home.Address, &home.Title, &home.Description)
 	if err != nil {
 		log.Println(err)
 		return home, err
 	}
 
-	announcementsQuery := `SELECT header, body, created_at FROM announcements where party_id = $1`
+	announcementsQuery := `SELECT id, header, body, created_at FROM announcements where party_id = $1`
 	rows, err := db.Query(announcementsQuery, party_id)
 	if err != nil {
 		log.Println(err)
@@ -39,7 +39,7 @@ func GetHome() (models.Home, error) {
 	home.Announcements = []models.Announcement{}
 	for rows.Next() {
 		var a models.Announcement
-		err := rows.Scan(&a.Header, &a.Body, &a.CreatedAt)
+		err := rows.Scan(&a.ID, &a.Header, &a.Body, &a.CreatedAt)
 		if err != nil {
 			return home, err
 		}
@@ -89,6 +89,8 @@ func GetHome() (models.Home, error) {
 
 	postsQuery := `
 		SELECT 
+			po.id,
+			gu.id,
 			gu.name, 
 			po.body, 
 			po.created_at 
@@ -106,7 +108,7 @@ func GetHome() (models.Home, error) {
 	home.Posts = []models.Post{}
 	for rows.Next() {
 		var p models.Post
-		err := rows.Scan(&p.Name, &p.Body, &p.CreatedAt)
+		err := rows.Scan(&p.ID, &p.GuestID, &p.Name, &p.Body, &p.CreatedAt)
 		if err != nil {
 			return home, err
 		}

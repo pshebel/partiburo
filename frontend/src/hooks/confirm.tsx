@@ -3,9 +3,9 @@ import { ConfirmRequest } from '../interfaces/confirm';
 import { Response } from '../interfaces/response';
 
 
-export const createConfirm = (email: string, passcode: string): UseQueryResult<Response> => {
+export const createConfirm = (code: string, passcode: string): UseQueryResult<Response> => {
     const body: ConfirmRequest = {
-        email: email,
+        code: code,
         passcode: passcode
     }
     return useQuery({

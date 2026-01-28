@@ -1,7 +1,7 @@
 package models
 
 type Unsubscribe struct {
-	PartyId	int		`json:"party_id"`
-	Email	string	`json:"email"`
-	All		bool	`json:"all"`
+	PartyCode	string	`json:"party_code"`
+	EmailCode	string	`json:"email_code"`
+	All			bool	`json:"all"`
 }

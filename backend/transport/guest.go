@@ -5,12 +5,25 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/mux"
+
 	"github.com/pshebel/partiburo/backend/models"
 	"github.com/pshebel/partiburo/backend/operations"
 )
 
 func GetGuestsHandler(w http.ResponseWriter, r *http.Request) {
-	guests, err := operations.GetGuests()
+	vars := mux.Vars(r)
+    code := vars["code"]
+    if code == "" {
+        w.WriteHeader(http.StatusBadRequest)
+        json.NewEncoder(w).Encode(models.Response{
+            Code:    400,
+            Message: "missing code",
+        })
+        return
+    }
+
+	guests, err := operations.GetGuests(code)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, "guests not found", http.StatusNotFound)
@@ -23,6 +36,17 @@ func GetGuestsHandler(w http.ResponseWriter, r *http.Request) {
 
 
 func CreateGuestHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+    code := vars["code"]
+    if code == "" {
+        w.WriteHeader(http.StatusBadRequest)
+        json.NewEncoder(w).Encode(models.Response{
+            Code:    400,
+            Message: "missing code",
+        })
+        return
+    }
+
 	var req models.GuestRequest
 	fmt.Println(r.Body)
 	err := json.NewDecoder(r.Body).Decode(&req)
@@ -35,7 +59,7 @@ func CreateGuestHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(resp)
         return
     }
-	resp, err := operations.CreateGuest(req)
+	resp, err := operations.CreateGuest(code, req)
 	if err != nil {
 		resp := models.Response{
 			Code: 500,
@@ -48,6 +72,16 @@ func CreateGuestHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateGuestHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+    code := vars["code"]
+    if code == "" {
+        w.WriteHeader(http.StatusBadRequest)
+        json.NewEncoder(w).Encode(models.Response{
+            Code:    400,
+            Message: "missing code",
+        })
+        return
+    }
 	var req models.UpdateGuestRequest
 	fmt.Println(r.Body)
 	err := json.NewDecoder(r.Body).Decode(&req)
@@ -60,7 +94,7 @@ func UpdateGuestHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(resp)
         return
     }
-	resp, err := operations.UpdateGuest(req)
+	resp, err := operations.UpdateGuest(code, req)
 	if err != nil {
 		resp := models.Response{
 			Code: 500,

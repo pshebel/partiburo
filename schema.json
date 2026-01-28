@@ -1,0 +1,27 @@
+{
+    "party": {
+        "model": {
+            "title": {
+                "type": "string",
+                "constraints": ["less than 500 characters"]
+            },
+            "description": {
+                "type": "string",
+                "constraints": ["less than 5000 characters"]
+            },
+            "date": {
+                "type": "string",
+                "constraints": ["DD/MM/YYYY"]
+            },
+            "time": {
+                "type": "string",
+                "constraints": ["HH:MM "]
+            },
+            "address": {
+                "type": "string",
+                "constraints": ["less than 500 characters"]
+            }
+        }
+
+    }
+}

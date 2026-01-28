@@ -1,22 +1,60 @@
 import { useAppForm } from '../../hooks/form.tsx'
 import { loginFormOptions } from './guest-form-options.tsx'
 import {  useMutation } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom'
 import { getGuest } from '../../hooks/identity'
 import { getHome } from '../../hooks/home';
+import { useParams,  useNavigate } from 'react-router-dom';
+import { formOptions } from '@tanstack/react-form'
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+const guestFormOptions = formOptions({
+  defaultValues: {
+    status: '',
+    email: '',
+    plus: 0,
+  },
+  validators: {
+    // Synchronous validation is much better for "as-you-type" logic
+    onChange: ({ value }) => {
+      if (value.email && !emailRegex.test(value.email)) {
+        return {
+          fields: {
+            email: 'Please enter a valid email address',
+          },
+        }
+      }
+
+      if (value.plus < 0 || value.plus > 250) {
+        return {
+          fields: {
+            plus: 'Plus one must be positive'
+          }
+        }
+      }
+      return undefined
+    },
+  },
+})
 
 export const Guest = () => {
   const navigate = useNavigate()
-  const guest_id = getGuest()
-
+  const { code } = useParams();
+  if (code === undefined) {
+      navigate('/')
+  }
+  const guest_id = getGuest(code);
+  if (guest_id === null) {
+      navigate(`/login/${code}`)
+  }
   // This will pull from the cache if Home has already been visited
-  const { data: homeData } = getHome()
+  const { data: homeData } = getHome(code)
 
   // Find the specific guest record from the home data
   const currentGuest = homeData?.Guests.find(g => g.id === guest_id)
 
   const form = useAppForm({
-    ...loginFormOptions,
+    ...guestFormOptions,
     // Inject the data from the cache into the form defaults
     defaultValues: {
       status: currentGuest?.status ?? '',
@@ -31,26 +69,17 @@ export const Guest = () => {
     },
   })
 
-  // const form = useAppForm({
-  //   ...loginFormOptions,
-  //   onSubmit: async ({ formApi, value }) => {
-  //     await saveUserMutation.mutateAsync(value)
-
-  //     // Reset the form to start-over with a clean state
-  //     formApi.reset()
-  //   },
-  // })
 
   const saveUserMutation = useMutation({
     mutationFn: async (req: { status: string, email: string, plus: string }) => {
-        const guest_id = getGuest()
+        const guest_id = getGuest(code)
         const body = {
           id: guest_id,
           status: req.status,
           email: req.email,
           plus: req.plus
         }
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/guest`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/guest/${code}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -60,7 +89,7 @@ export const Guest = () => {
         return response.json() as Promise<Response>;
     },
     onSuccess: () => {
-        navigate('/')
+        navigate(`/${code}`)
     },
     onError: (err: any) => {
         window.confirm(err)

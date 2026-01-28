@@ -3,11 +3,19 @@ import { postFormOptions } from './post-form-options.tsx'
 import {  useMutation } from '@tanstack/react-query';
 import { getGuest } from '../../hooks/identity'
 import { Response } from '../../interfaces/response.js'
-import { useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 export const Post = () => {
   const navigate = useNavigate()
-  const guest_id = getGuest()
+  const { code } = useParams();
+  if (code === undefined) {
+      navigate('/')
+  }
+
+  const guest_id = getGuest(code);
+  if (guest_id === null) {
+      navigate(`/login/${code}`)
+  }
   const form = useAppForm({
     ...postFormOptions,
     onSubmit: async ({ formApi, value }) => {
@@ -24,7 +32,7 @@ export const Post = () => {
           id: guest_id,
           body: req.body
         }
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/post`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/post/${code}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -34,7 +42,7 @@ export const Post = () => {
         return response.json() as Promise<Response>;
     },
     onSuccess: () => {
-      navigate('/')
+      navigate(`/${code}`)
     },
     onError: (err: any) => {
         window.confirm(err)

@@ -1,3 +1,15 @@
+DROP TABLE IF EXISTS reminders;
+
+DROP TABLE IF EXISTS email;
+
+DROP TABLE IF EXISTS queue;
+
+DROP TABLE IF EXISTS blacklist;
+
+DROP TABLE IF EXISTS whitelist;
+
+DROP TABLE IF EXISTS notifications;
+
 DROP TABLE IF EXISTS posts;
 
 DROP TABLE IF EXISTS guests;

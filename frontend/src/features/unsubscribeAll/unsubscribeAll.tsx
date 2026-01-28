@@ -2,7 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { postUnsubscribeAll } from '../../hooks/unsubscribe';
 
 export const UnsubscribeAll = () => {
-    const { email } = useParams();
+    const { email_code } = useParams();
 
     // Reusable Error Component for consistency
     const ErrorView = ({ message }: { message: string }) => (
@@ -20,11 +20,11 @@ export const UnsubscribeAll = () => {
         </div>
     );
 
-    if (email === undefined) {
+    if (email_code === undefined) {
         return <ErrorView message="No email address found. Please report this to support@partiburo.com" />;
     }
 
-    const { data, isLoading, error } = postUnsubscribeAll(email);
+    const { data, isLoading, error } = postUnsubscribeAll(email_code);
 
     if (isLoading) {
         return (

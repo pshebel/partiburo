@@ -1,65 +1,65 @@
-name: Deploy Dev Mail
+# name: Deploy Dev Mail
 
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - mail/**
+# on:
+#   workflow_dispatch:
+#   push:
+#     branches:
+#       - main
+#     paths:
+#       - mail/**
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./mail
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     defaults:
+#       run:
+#         working-directory: ./mail
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v4
 
-    - name: Setup Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.21'
+#     - name: Setup Go
+#       uses: actions/setup-go@v4
+#       with:
+#         go-version: '1.21'
     
-    - name: Cache Go modules
-      uses: actions/cache@v3
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
+#     - name: Cache Go modules
+#       uses: actions/cache@v3
+#       with:
+#         path: ~/go/pkg/mod
+#         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+#         restore-keys: |
+#           ${{ runner.os }}-go-
     
-    - name: Download dependencies
-      run: go mod download
+#     - name: Download dependencies
+#       run: go mod download
     
-    - name: Build for Linux
-      env:
-        GOOS: linux
-        GOARCH: amd64
-        CGO_ENABLED: 1
-      run: |
-        go build -a -installsuffix cgo -o mail .
+#     - name: Build for Linux
+#       env:
+#         GOOS: linux
+#         GOARCH: amd64
+#         CGO_ENABLED: 1
+#       run: |
+#         go build -a -installsuffix cgo -o mail .
     
-    - name: Setup SSH key
-      uses: webfactory/ssh-agent@v0.8.0
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+#     - name: Setup SSH key
+#       uses: webfactory/ssh-agent@v0.8.0
+#       with:
+#         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
     
-    - name: Add server to known hosts
-      run: |
-        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+#     - name: Add server to known hosts
+#       run: |
+#         ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
 
-    - name: Copy binary to server
-      run: |
-        scp ./mail ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }}:~/mail
+#     - name: Copy binary to server
+#       run: |
+#         scp ./mail ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }}:~/mail
     
-    - name: Move binary and set permissions
-      run: |
-        ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} \
-          "sudo mv ~/mail ${{ secrets.DEPLOY_PATH }}/mail && \
-           sudo chown ${{ secrets.APP_USER }}:${{ secrets.APP_USER }} ${{ secrets.DEPLOY_PATH }}/mail && \
-           sudo chmod +x ${{ secrets.DEPLOY_PATH }}/mail
-           "
+#     - name: Move binary and set permissions
+#       run: |
+#         ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_HOST }} \
+#           "sudo mv ~/mail ${{ secrets.DEPLOY_PATH }}/mail && \
+#            sudo chown ${{ secrets.APP_USER }}:${{ secrets.APP_USER }} ${{ secrets.DEPLOY_PATH }}/mail && \
+#            sudo chmod +x ${{ secrets.DEPLOY_PATH }}/mail
+#            "

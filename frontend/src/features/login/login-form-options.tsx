@@ -26,7 +26,7 @@ export const loginFormOptions = formOptions({
         errors.fields.name = 'Name is required'
       }
       if (!value.status) {
-        errors.fields.name = 'Status is required'
+        errors.fields.status = 'Status is required'
       }
       if (value.plus < 0 || value.plus > 250) {
         return {

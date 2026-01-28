@@ -1,0 +1,2 @@
+ALTER TABLE whitelist
+ADD COLUMN code TEXT NOT NULL DEFAULT '';
