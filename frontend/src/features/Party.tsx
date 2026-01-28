@@ -3,6 +3,7 @@ import {  useMutation } from '@tanstack/react-query';
 import { Party, PartyResponse } from '../interfaces/party'
 import { useNavigate } from 'react-router-dom'
 import { formOptions } from '@tanstack/react-form'
+import { Header } from './Header'
 
 const partyFormOptions = formOptions({
   defaultValues: {
@@ -13,7 +14,6 @@ const partyFormOptions = formOptions({
     date: '',
     time: '',
     reminders: [],
-    announcements: [],
   },
   validators: {
     onChangeAsync: async ({ value }) => {
@@ -22,19 +22,25 @@ const partyFormOptions = formOptions({
       } as {
         fields: Record<string, string>
       }
-      // if (!value.title) {
-      //   errors.fields.title = 'Title is required'
-      // }
-      // if (!value.description) {
-      //   errors.fields.description = 'Description is required'
-      // }
-      // if (!value.location) {
-      //   errors.fields.location = 'Location is required'
-      // }
-      // if (!value.date) {
-      //   errors.fields.date = 'Date is required'
-      // }
+      if (!value.admin_email) {
+        errors.fields.admin_email = 'Admin Email is required'
+      }
+      if (!value.title) {
+        errors.fields.title = 'Title is required'
+      }
+      if (!value.description) {
+        errors.fields.description = 'Description is required'
+      }
+      if (!value.address) {
+        errors.fields.address = 'Address is required'
+      }
+      if (!value.date) {
+        errors.fields.date = 'Date is required'
+      }
 
+      if (!value.time) {
+        errors.fields.time = 'Time is required'
+      }
 
       if (value.title.length > 500) {
         errors.fields.name = 'Title is too long. Must be less than 500 characters.'
@@ -43,8 +49,6 @@ const partyFormOptions = formOptions({
       if (value.description.length > 5000) {
         errors.fields.description = 'Description is too long. Must be less than 5000 characters.'
       }
-
-     
 
       return errors
     },
@@ -85,6 +89,7 @@ export const CreateParty = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 flex items-center justify-center">
+      <Header />
       <form
         onSubmit={(e) => {
           e.preventDefault()
@@ -97,7 +102,7 @@ export const CreateParty = () => {
             name="admin_email"
             children={(field) => (
               <field.TextField 
-                label="Admin Email" 
+                label="Admin Email"
               />
             )}
           />
@@ -161,7 +166,7 @@ export const CreateParty = () => {
             name="reminders"
             children={(field) => (
               <field.MultiSelectField
-                label="reminders"
+                label="Reminders"
                 options={[{
                         label: 'day of',
                         value: 'day_of',

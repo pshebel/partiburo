@@ -35,14 +35,16 @@ type Home struct {
 }
 
 type Party struct {
-	ID				string
-	AdminEmail		string
-	Title			string
-	Description		string
-	Date			string
-	Time			string
-	Address			string
-	CreatedAt 		time.Time
+	ID				string		`json:"id"`
+	AdminEmail		string		`json:"admin_email"`
+	Title			string		`json:"title"`
+	Description		string		`json:"description"`
+	Date			string		`json:"date"`
+	Time			string		`json:"time"`
+	Address			string		`json:"address"`
+	Reminders		[]string	`json:"reminders"`
+	Announcements	[]Announcement `json:"announcements"`
+	CreatedAt 		time.Time	`json:"created_at"`
 }
 
 

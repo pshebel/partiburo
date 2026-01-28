@@ -28,7 +28,7 @@ func GetHome(code string) (models.Home, error) {
 		return home, err
 	}
 
-	announcementsQuery := `SELECT header, body, created_at FROM announcements where party_id = $1`
+	announcementsQuery := `SELECT id, header, body, created_at FROM announcements where party_id = $1`
 	rows, err := db.Query(announcementsQuery, party_id)
 	if err != nil {
 		log.Println(err)
@@ -39,7 +39,7 @@ func GetHome(code string) (models.Home, error) {
 	home.Announcements = []models.Announcement{}
 	for rows.Next() {
 		var a models.Announcement
-		err := rows.Scan(&a.Header, &a.Body, &a.CreatedAt)
+		err := rows.Scan(&a.ID, &a.Header, &a.Body, &a.CreatedAt)
 		if err != nil {
 			return home, err
 		}
@@ -89,6 +89,8 @@ func GetHome(code string) (models.Home, error) {
 
 	postsQuery := `
 		SELECT 
+			po.id,
+			gu.id,
 			gu.name, 
 			po.body, 
 			po.created_at 
@@ -106,7 +108,7 @@ func GetHome(code string) (models.Home, error) {
 	home.Posts = []models.Post{}
 	for rows.Next() {
 		var p models.Post
-		err := rows.Scan(&p.Name, &p.Body, &p.CreatedAt)
+		err := rows.Scan(&p.ID, &p.GuestID, &p.Name, &p.Body, &p.CreatedAt)
 		if err != nil {
 			return home, err
 		}

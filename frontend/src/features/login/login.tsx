@@ -1,3 +1,5 @@
+import {useEffect} from 'react';
+
 import { CreateGuest } from './create-guest';
 import { SelectGuest } from './select-guest';
 import { getParty } from '../../hooks/party';
@@ -6,13 +8,34 @@ import { useParams, useNavigate } from 'react-router-dom';
 export const Login = () => {
   const navigate = useNavigate()
   const { code } = useParams();
-  if (code === undefined) {
-      navigate('/')
-  }
-  const { data, isLoading, error } = getParty(code);
+  useEffect(() => {
+    if (!code) {
+      navigate('/');
+    }
+  }, [code, navigate]);
+
+  const { data, isLoading, error } = getParty(code || "");
   
   if (isLoading) return <div className="flex justify-center p-20 animate-pulse text-gray-500">Loading party details...</div>;
-  if (error || !data) return <div className="p-6 text-red-600 bg-red-50 rounded-lg m-4">Error: {error?.message || "Data missing"}</div>;
+  if (error || !data) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <div className="max-w-md w-full p-6 text-center bg-white rounded-2xl shadow-sm border border-red-100">
+          <div className="text-red-500 text-4xl mb-4">⚠️</div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Party Not Found</h2>
+          <p className="text-gray-600 mb-6">
+            {error?.message || "We couldn't find a party with that code. Please check your link and try again."}
+          </p>
+          <button 
+            onClick={() => navigate('/')}
+            className="w-full py-2 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
+          >
+            Go Back Home
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
@@ -21,13 +44,13 @@ export const Login = () => {
         {/* Event Hero Section */}
         <section className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
           <h1 className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-2">The Event</h1>
-          <h2 className="text-3xl font-extrabold text-gray-900 mb-4">{data.Title}</h2>
-          <p className="text-gray-600 mb-6 whitespace-pre-line text-left">{data.Description}</p>
+          <h2 className="text-3xl font-extrabold text-gray-900 mb-4">{data.title}</h2>
+          <p className="text-gray-600 mb-6 whitespace-pre-line text-left">{data.description}</p>
           <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500 font-medium">
-            <span>📅 {data.Date}</span>
-            <span>⏰ {data.Time}</span>
+            <span>📅 {data.date}</span>
+            <span>⏰ {data.time}</span>
             <span className="hidden sm:inline">|</span>
-            <span>📍 {data.Address}</span>
+            <span>📍 {data.address}</span>
           </div>
         </section>
 

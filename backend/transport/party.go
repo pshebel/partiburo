@@ -16,19 +16,20 @@ func PostTitlesHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r.Body)
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(http.StatusBadRequest)
 		resp := models.Response{
-			Code: 500,
+			Code: http.StatusBadRequest,
 			Message: "invalid request body",
 		}
 		json.NewEncoder(w).Encode(resp)
         return
     }
 
-	titles, err := operations.GetTitles(req)
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, "titles not found", http.StatusNotFound)
+	titles, resp := operations.GetTitles(req)
+	if resp != nil {
+		fmt.Println(resp)
+		w.WriteHeader(resp.Code)
+        json.NewEncoder(w).Encode(resp)
 		return
 	}
 
@@ -41,15 +42,16 @@ func GetPartyHandler(w http.ResponseWriter, r *http.Request) {
     if code == "" {
         w.WriteHeader(http.StatusBadRequest)
         json.NewEncoder(w).Encode(models.Response{
-            Code:    400,
+            Code:    http.StatusBadRequest,
             Message: "missing code",
         })
         return
     }
-	party, err := operations.GetParty(code)
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, "party not found", http.StatusNotFound)
+	party, resp := operations.GetParty(code)
+	if resp != nil {
+		fmt.Println(resp)
+		w.WriteHeader(resp.Code)
+        json.NewEncoder(w).Encode(resp)
 		return
 	}
 
@@ -60,17 +62,20 @@ func CreatePartyHandler(w http.ResponseWriter, r *http.Request) {
 	var req models.PartyRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		resp := models.Response{
-			Code: 500,
-			Message: "invalid request body",
-		}
-		json.NewEncoder(w).Encode(resp)
+		fmt.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+        json.NewEncoder(w).Encode(models.Response{
+            Code:    http.StatusBadRequest,
+            Message: "bad request",
+        })
         return
     }
 
-	party, err := operations.CreateParty(req)
-	if err != nil {
-		http.Error(w, "party not found", http.StatusNotFound)
+	party, resp := operations.CreateParty(req)
+	if resp != nil {
+		fmt.Println(resp)
+		w.WriteHeader(http.StatusNotFound)
+        json.NewEncoder(w).Encode(resp)
 		return
 	}
 
@@ -92,19 +97,17 @@ func UpdatePartyHandler(w http.ResponseWriter, r *http.Request) {
 	var req models.Party
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		resp := models.Response{
-			Code: 500,
-			Message: "invalid request body",
-		}
-		json.NewEncoder(w).Encode(resp)
+		fmt.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+        json.NewEncoder(w).Encode(models.Response{
+            Code:    http.StatusBadRequest,
+            Message: "invalid request body",
+        })
         return
     }
 
-	party, err := operations.UpdateParty(code, req)
-	if err != nil {
-		http.Error(w, "party not found", http.StatusNotFound)
-		return
-	}
+	resp := operations.UpdateParty(code, req)
 
-	json.NewEncoder(w).Encode(party)
+	w.WriteHeader(resp.Code)
+	json.NewEncoder(w).Encode(resp)
 }

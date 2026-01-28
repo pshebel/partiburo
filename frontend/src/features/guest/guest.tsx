@@ -4,6 +4,38 @@ import {  useMutation } from '@tanstack/react-query';
 import { getGuest } from '../../hooks/identity'
 import { getHome } from '../../hooks/home';
 import { useParams,  useNavigate } from 'react-router-dom';
+import { formOptions } from '@tanstack/react-form'
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+const guestFormOptions = formOptions({
+  defaultValues: {
+    status: '',
+    email: '',
+    plus: 0,
+  },
+  validators: {
+    // Synchronous validation is much better for "as-you-type" logic
+    onChange: ({ value }) => {
+      if (value.email && !emailRegex.test(value.email)) {
+        return {
+          fields: {
+            email: 'Please enter a valid email address',
+          },
+        }
+      }
+
+      if (value.plus < 0 || value.plus > 250) {
+        return {
+          fields: {
+            plus: 'Plus one must be positive'
+          }
+        }
+      }
+      return undefined
+    },
+  },
+})
 
 export const Guest = () => {
   const navigate = useNavigate()
@@ -22,7 +54,7 @@ export const Guest = () => {
   const currentGuest = homeData?.Guests.find(g => g.id === guest_id)
 
   const form = useAppForm({
-    ...loginFormOptions,
+    ...guestFormOptions,
     // Inject the data from the cache into the form defaults
     defaultValues: {
       status: currentGuest?.status ?? '',
@@ -37,15 +69,6 @@ export const Guest = () => {
     },
   })
 
-  // const form = useAppForm({
-  //   ...loginFormOptions,
-  //   onSubmit: async ({ formApi, value }) => {
-  //     await saveUserMutation.mutateAsync(value)
-
-  //     // Reset the form to start-over with a clean state
-  //     formApi.reset()
-  //   },
-  // })
 
   const saveUserMutation = useMutation({
     mutationFn: async (req: { status: string, email: string, plus: string }) => {

@@ -17,7 +17,8 @@ var (
 )
 
 func init() {
+	log.Println(AwsSender)
 	if !utils.IsValidEmail(AwsSender) {
-		log.Println("invalid email")
+		log.Fatal("invalid email")
 	}
 }

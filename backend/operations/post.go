@@ -34,3 +34,55 @@ func CreatePost(code string, req models.PostRequest) (models.Post, error) {
 
 	return post, nil
 }
+
+func UpdatePost(code string, req models.Post) models.Response {
+	db, err := database.GetDB()
+	if err != nil {
+		log.Println(err)
+		return models.Response{500, "service error"}
+	}
+
+	query := `
+		UPDATE posts 
+		SET
+		body = ? 
+		WHERE id = ? 
+		AND party_id = (
+			SELECT id 
+			FROM party 
+			WHERE user_code = ?
+		);
+	`
+	_, err = db.Exec(query, req.Body, req.ID, code)
+	if err != nil {
+		log.Println(err)
+		return models.Response{500, "Service Error"}
+	}
+
+	return models.Response{200, "success"}
+}
+
+func DeletePost(code string, req models.Post) models.Response {
+	db, err := database.GetDB()
+	if err != nil {
+		log.Println(err)
+		return models.Response{500, "service error"}
+	}
+
+	query := `
+		DELETE FROM posts 
+		WHERE id = ? 
+		AND party_id = (
+			SELECT id 
+			FROM party 
+			WHERE user_code = ?
+		);
+	`
+	_, err = db.Exec(query, req.ID, code)
+	if err != nil {
+		log.Println(err)
+		return models.Response{500, "Service Error"}
+	}
+
+	return models.Response{200, "success"}
+}

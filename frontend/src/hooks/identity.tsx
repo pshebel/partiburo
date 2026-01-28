@@ -3,6 +3,30 @@ type GuestMap = Record<string, string>;
 
 const STORAGE_KEY = 'partiburo';
 
+/**
+ * Removes any codes from localStorage that are not present in the validCodes array.
+ */
+export const syncCodes = (validCodes: string[]): void => {
+  const rawData = localStorage.getItem(STORAGE_KEY);
+  if (!rawData) return;
+
+  try {
+    const data: GuestMap = JSON.parse(rawData);
+    const newData: GuestMap = {};
+
+    // Only keep entries that the server confirmed are valid
+    validCodes.forEach((code) => {
+      if (data[code]) {
+        newData[code] = data[code];
+      }
+    });
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
+  } catch (error) {
+    console.error("Failed to sync guest data", error);
+  }
+};
+
 export const getCodes = (): string[] => {
   const rawData = localStorage.getItem(STORAGE_KEY);
   if (!rawData) return [];

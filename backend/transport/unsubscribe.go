@@ -14,20 +14,21 @@ func CreateUnsubscribeHandler(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		fmt.Println(err)
-		resp := models.Response{
-			Code: 500,
-			Message: "invalid request body",
-		}
-		json.NewEncoder(w).Encode(resp)
+		w.WriteHeader(http.StatusBadRequest)
+        json.NewEncoder(w).Encode(models.Response{
+            Code:    http.StatusBadRequest,
+            Message: "invalid request body",
+        })
         return
     }
 	resp, err := operations.CreateUnsubscribe(req)
 	if err != nil {
-		resp := models.Response{
-			Code: 500,
-			Message: "failed to create guest",
-		}
-		json.NewEncoder(w).Encode(resp)
+		fmt.Println(err)
+		w.WriteHeader(http.StatusNotFound)
+        json.NewEncoder(w).Encode(models.Response{
+            Code:    http.StatusNotFound,
+            Message: "party not found",
+        })
         return
 	}
 	json.NewEncoder(w).Encode(resp)

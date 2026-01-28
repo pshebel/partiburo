@@ -13,12 +13,15 @@ export interface PartyResponse {
 }
 
 export interface Party {
+    admin_email:    string;
     title:          string;
     description:    string;
     date:           string;
     time:           string;
     address:        string;
     createdAt:      string;
+    reminders:      string[];
+    announcements:  Announcement[];
 }
 
 export interface Home {
@@ -35,6 +38,7 @@ export interface Home {
 }
 
 export interface Announcement {
+    id:         string;
     header:     string;
     body:       string;
     created_at:  string;
@@ -46,7 +50,8 @@ export interface GuestResponse {
 
 export interface Post {
     id:         string;
+    guest_id:   string;
     name:       string;
     body:       string;
-    createdAt:  string;
+    created_at:  string;
 }

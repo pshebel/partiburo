@@ -1,19 +1,61 @@
 import { getHome } from '../../hooks/home';
 import { getGuest } from '../../hooks/identity';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { Header } from '../Header';
 
 export const Home = () => {
     const navigate = useNavigate()
     const { code } = useParams();
+    const queryClient = useQueryClient();
     if (code === undefined) {
         navigate('/')
     }
-    const { data, isLoading, error } = getHome(code);
-    const guest_id = getGuest(code);
-    if (guest_id === null) {
-        navigate(`/login/${code}`)
+    // 1. State for inline editing
+    const [editingPostId, setEditingPostId] = useState<string | null>(null);
+    const [editBody, setEditBody] = useState("");
+
+    if (code === undefined) {
+        navigate('/');
     }
 
+    const { data, isLoading, error } = getHome(code);
+    const guest_id = getGuest(code);
+
+    if (guest_id === null) {
+        navigate(`/login/${code}`);
+    }
+
+    // 2. Mutations for Update and Delete
+    const deletePostMutation = useMutation({
+        mutationFn: async (postId: number) => {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/post/${code}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: postId }),
+            });
+            if (!res.ok) throw new Error('Could not delete post');
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['home', code] });
+        }
+    });
+
+    const updatePostMutation = useMutation({
+        mutationFn: async (postId: number) => {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/post/${code}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: postId, body: editBody }),
+            });
+            if (!res.ok) throw new Error('Could not update post');
+        },
+        onSuccess: () => {
+            setEditingPostId(null);
+            queryClient.invalidateQueries({ queryKey: ['home', code] });
+        }
+    });
     // Loading State
     if (isLoading) {
         return (
@@ -34,9 +76,9 @@ export const Home = () => {
 
     return (
         <div className="max-w-4xl mx-auto p-6 space-y-12 bg-white min-h-screen">
-            
+            <Header />
             {/* 1. About Section */}
-            <section className="border-b pb-8">
+            <section>
                 <h1 className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-2">About</h1>
                 <h2 className="text-4xl font-extrabold text-gray-900 mb-4">{data.Title}</h2>
                 <p className="text-lg text-gray-600 leading-relaxed mb-6 whitespace-pre-line">
@@ -83,7 +125,7 @@ export const Home = () => {
                 </div>
             </section>
 
-            {/* 4. Posts/Social */}
+            {/* 4. Community Posts with Edit/Delete */}
             <section>
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-xs font-bold uppercase tracking-widest text-purple-600">Community Posts</h1>
@@ -93,14 +135,59 @@ export const Home = () => {
                 </div>
                 
                 <div className="space-y-6">
-                    {data.Posts.sort((a,b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)).map((p, i) => (
-                        <div key={i} className="flex gap-4 items-start">
+                    {data.Posts.sort((a,b) => Date.parse(b.created_at) - Date.parse(a.created_at)).map((p, i) => (
+                        <div key={i} className="flex gap-4 items-start group">
                             <div className="w-10 h-10 rounded-full bg-purple-100 flex-shrink-0 flex items-center justify-center text-purple-600 font-bold">
                                 {p.name[0]}
                             </div>
-                            <div className="flex flex-col">
-                                <span className="font-bold text-sm text-gray-900">{p.name}</span>
-                                <p className="text-gray-600 text-sm mt-1">{p.body}</p>
+                            <div className="flex-1 flex flex-col">
+                                <div className="flex justify-between items-center">
+                                    <span className="font-bold text-sm text-gray-900">{p.name}</span>
+                                    
+                                    {/* 3. Show controls only if the guest_id matches */}
+                                    {p.guest_id === guest_id && editingPostId !== p.id && (
+                                        <div className="flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button 
+                                                onClick={() => { setEditingPostId(p.id); setEditBody(p.body); }}
+                                                className="text-xs text-blue-600 font-semibold hover:underline"
+                                            >
+                                                Edit
+                                            </button>
+                                            <button 
+                                                onClick={() => { if(confirm("Delete post?")) deletePostMutation.mutate(p.id); }}
+                                                className="text-xs text-red-600 font-semibold hover:underline"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {editingPostId === p.id ? (
+                                    <div className="mt-2 space-y-2">
+                                        <textarea 
+                                            className="w-full p-2 text-sm border rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
+                                            value={editBody}
+                                            onChange={(e) => setEditBody(e.target.value)}
+                                        />
+                                        <div className="flex gap-2">
+                                            <button 
+                                                onClick={() => updatePostMutation.mutate(p.id)}
+                                                className="bg-purple-600 text-white px-3 py-1 rounded text-xs font-bold"
+                                            >
+                                                Save
+                                            </button>
+                                            <button 
+                                                onClick={() => setEditingPostId(null)}
+                                                className="bg-gray-100 text-gray-600 px-3 py-1 rounded text-xs"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <p className="text-gray-600 text-sm mt-1">{p.body}</p>
+                                )}
                             </div>
                         </div>
                     ))}

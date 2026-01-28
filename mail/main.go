@@ -41,11 +41,6 @@ type Party struct {
 }
 
 func send(email, subject, body string) error {
-	// if env.Env != "prod" {
-	// 	fmt.Println(email, subject, body) 
-	// 	return nil
-	// }
-
 
 	ctx := context.Background()
 	cfg, err := config.LoadDefaultConfig(ctx, config.WithRegion(env.AwsRegion))
@@ -241,7 +236,17 @@ func main() {
 		}
 
 		if subject != ""  && body != "" {
-			query := `SELECT e.email FROM guests as g LEFT JOIN email as e ON e.id=g.email_id WHERE g.party_id=?`
+			query := `
+				SELECT e.email 
+				FROM guests as g 
+				LEFT JOIN email as e ON e.id=g.email_id
+				WHERE g.party_id=?
+				AND NOT EXISTS (
+					SELECT 1 
+					FROM blacklist AS b 
+					WHERE b.email_id = g.email_id
+				)
+			`
 			rows, err := db.Query(query, p.id)
 			if err != nil {
 				log.Println(err)

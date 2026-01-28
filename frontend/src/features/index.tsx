@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getTitles } from '../hooks/party';
-import { getCodes } from '../hooks/identity';
+import { getCodes, syncCodes } from '../hooks/identity';
+import { Header } from './Header';
 import { TitleRequest } from '../interfaces/party';
 
 export const Index = () => {
@@ -9,8 +10,20 @@ export const Index = () => {
     const [joinCode, setJoinCode] = useState('');
     
     const codes = getCodes() || [];
-    const req: TitleRequest = { codes };
-    const { data, isLoading, error } = getTitles(req);
+    const req = useMemo(() => ({ codes }), [codes.length]);
+    // const req: TitleRequest = { codes };
+    const { data, error } = getTitles(req, codes.length > 0);
+    // Sync Logic
+    useEffect(() => {
+        if (data?.titles) {
+            const serverCodes = Object.keys(data.titles);
+            
+            // If server has fewer codes than we do, some were deleted
+            if (serverCodes.length < codes.length) {
+                syncCodes(serverCodes);
+            }
+        }
+    }, [data, codes.length]);
 
     const handleJoin = (e: React.FormEvent) => {
         e.preventDefault();
@@ -19,11 +32,12 @@ export const Index = () => {
         }
     };
 
-    if (isLoading) return <div className="p-8 text-center text-gray-500">Loading your parties...</div>;
+    // if (isLoading) return <div className="p-8 text-center text-gray-500">Loading your parties...</div>;
 
     return (
         <div className="max-w-2xl mx-auto p-6 space-y-8">
-            {/* Header Section */}
+            <Header />
+            {/* Header Section 
             <header className="flex justify-between items-center border-b pb-4">
                 <h1 className="text-2xl font-bold text-gray-800">Partiburo</h1>
                 <Link 
@@ -33,7 +47,16 @@ export const Index = () => {
                     + Create Party
                 </Link>
             </header>
-
+            */}
+            {/* Create Party Action (Moved out of Header) */}
+                <div className="flex justify-end">
+                    <Link 
+                        to="/party" 
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition shadow-sm"
+                    >
+                        + Create Party
+                    </Link>
+                </div>
             {/* Join Section */}
             <section className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <h2 className="text-lg font-semibold mb-4">Join a Party</h2>
@@ -57,7 +80,7 @@ export const Index = () => {
             {/* List Section */}
             <section>
                 <h2 className="text-gray-500 uppercase tracking-wider text-xs font-bold mb-4">Your Recent Parties</h2>
-                {codes.length === 0 ? (
+                {codes.length === 0 || error ? (
                     <p className="text-gray-400 italic">No parties found yet.</p>
                 ) : (
                     <ul className="grid gap-3">
