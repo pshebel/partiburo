@@ -3,7 +3,7 @@ import {  useMutation } from '@tanstack/react-query';
 import { Party, PartyResponse } from '../interfaces/party'
 import { useNavigate } from 'react-router-dom'
 import { formOptions } from '@tanstack/react-form'
-import { Header } from './Header'
+
 
 const partyFormOptions = formOptions({
   defaultValues: {
@@ -89,7 +89,6 @@ export const CreateParty = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 flex items-center justify-center">
-      <Header />
       <form
         onSubmit={(e) => {
           e.preventDefault()

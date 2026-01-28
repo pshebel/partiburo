@@ -67,27 +67,49 @@ export const Home = () => {
 
     // Error State
     if (error || !data) {
-        return (
-            <div className="p-6 m-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-                <span className="font-bold">Error:</span> {error?.message || "Failed to load data"}
-            </div>
-        );
+        if (error || !data) {
+            return (
+                <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+                    <div className="max-w-md w-full p-6 text-center bg-white rounded-2xl shadow-sm border border-red-100">
+                    <div className="text-red-500 text-4xl mb-4">⚠️</div>
+                    <h2 className="text-xl font-bold text-gray-900 mb-2">Party Not Found</h2>
+                    <p className="text-gray-600 mb-6">
+                        {error?.message || "We couldn't find a party with that code. Please check your link and try again."}
+                    </p>
+                    <button 
+                        onClick={() => navigate('/')}
+                        className="w-full py-2 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
+                    >
+                        Go Back Home
+                    </button>
+                    </div>
+                </div>
+            );
+        }
     }
 
     return (
         <div className="max-w-4xl mx-auto p-6 space-y-12 bg-white min-h-screen">
             <Header />
             {/* 1. About Section */}
-            <section>
-                <h1 className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-2">About</h1>
-                <h2 className="text-4xl font-extrabold text-gray-900 mb-4">{data.Title}</h2>
-                <p className="text-lg text-gray-600 leading-relaxed mb-6 whitespace-pre-line">
+            {/* 1. Hero Section - Centered for Balance */}
+            <section className="text-center py-8 border-b border-gray-200">
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-600">
+                    You're Invited
+                </span>
+                <h1 className="text-5xl font-black text-gray-900 mt-2 mb-6 tracking-tight">
+                    {data.Title}
+                </h1>
+                <p className="max-w-2xl mx-auto text-xl text-gray-600 leading-relaxed mb-8 whitespace-pre-line">
                     {data.Description}
                 </p>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm font-medium text-gray-500">
+                {/* Centered Pill Detail Bar */}
+                <div className="inline-flex flex-wrap justify-center gap-6 px-8 py-4 bg-white rounded-2xl shadow-sm border border-gray-100 text-sm font-semibold text-gray-700">
                     <div className="flex items-center gap-2">📅 {data.Date}</div>
+                    <div className="hidden sm:block border-r border-gray-200 h-4" />
                     <div className="flex items-center gap-2">⏰ {data.Time}</div>
+                    <div className="hidden sm:block border-r border-gray-200 h-4" />
                     <div className="flex items-center gap-2">📍 {data.Address}</div>
                 </div>
             </section>

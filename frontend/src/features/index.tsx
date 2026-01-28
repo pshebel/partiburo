@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getTitles } from '../hooks/party';
 import { getCodes, syncCodes } from '../hooks/identity';
 import { Header } from './Header';
-import { TitleRequest } from '../interfaces/party';
 
 export const Index = () => {
     const navigate = useNavigate();
@@ -37,33 +36,28 @@ export const Index = () => {
     return (
         <div className="max-w-2xl mx-auto p-6 space-y-8">
             <Header />
-            {/* Header Section 
-            <header className="flex justify-between items-center border-b pb-4">
-                <h1 className="text-2xl font-bold text-gray-800">Partiburo</h1>
-                <Link 
-                    to="/party" 
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition"
-                >
-                    + Create Party
-                </Link>
-            </header>
-            */}
             {/* Create Party Action (Moved out of Header) */}
-                <div className="flex justify-end">
-                    <Link 
-                        to="/party" 
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition shadow-sm"
-                    >
-                        + Create Party
-                    </Link>
+            <section className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div className="flex justify-between items-center">
+                    <h2 className="text-lg font-semibold">Create a party</h2>
+                    <div className="flex justify-end">
+                        <Link 
+                            to="/party" 
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition shadow-sm"
+                        >
+                            Create
+                        </Link>
+                    </div>
                 </div>
+            </section>
+                
             {/* Join Section */}
             <section className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <h2 className="text-lg font-semibold mb-4">Join a Party</h2>
                 <form onSubmit={handleJoin} className="flex gap-2">
                     <input 
                         type="text"
-                        placeholder="Enter party code (e.g. 9nyyDU)"
+                        placeholder="Enter party code (e.g. abc123)"
                         value={joinCode}
                         onChange={(e) => setJoinCode(e.target.value)}
                         className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"

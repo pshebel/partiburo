@@ -24,10 +24,11 @@ func GetHomeHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-	home, err := operations.GetHome(code)
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, "home not found", http.StatusNotFound)
+	home, resp := operations.GetHome(code)
+	if resp != nil {
+		fmt.Println(resp)
+		w.WriteHeader(resp.Code)
+        json.NewEncoder(w).Encode(*resp)
 		return
 	}
 

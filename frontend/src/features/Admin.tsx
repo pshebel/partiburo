@@ -6,6 +6,7 @@ import {useState } from 'react'
 import { Header } from './Header'
 
 export const AdminHome = () => {
+    const navigate = useNavigate()
     const { code } = useParams();
     const queryClient = useQueryClient();
     const { data, isLoading, error } = getParty(code);
@@ -28,6 +29,18 @@ export const AdminHome = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['party', code] });
             alert("Party updated!");
+        }
+    });
+
+    const deletePartyMutation = useMutation({
+        mutationFn: async () => {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/party/${code}`, {
+                method: 'DELETE',
+            });
+            if (!res.ok) throw new Error('Delete failed');
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['party', code] });
         }
     });
 
@@ -65,17 +78,46 @@ export const AdminHome = () => {
     });
 
     if (isLoading) return <div>Loading...</div>;
-    if (error || !data) return <div>Error loading data</div>;
+    if (error || !data) {
+        if (error || !data) {
+            return (
+                <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+                    <div className="max-w-md w-full p-6 text-center bg-white rounded-2xl shadow-sm border border-red-100">
+                    <div className="text-red-500 text-4xl mb-4">⚠️</div>
+                    <h2 className="text-xl font-bold text-gray-900 mb-2">Party Not Found</h2>
+                    <p className="text-gray-600 mb-6">
+                        {error?.message || "We couldn't find a party with that code. Please check your link and try again."}
+                    </p>
+                    <button 
+                        onClick={() => navigate('/')}
+                        className="w-full py-2 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
+                    >
+                        Go Back Home
+                    </button>
+                    </div>
+                </div>
+            );
+        }
+    }
 
     return (
         <div className="max-w-4xl mx-auto p-6 space-y-12 bg-white min-h-screen">
             <Header />
-            <header className="flex justify-between items-start border-b pb-8">
+            <section className="flex justify-between items-center border-b pb-8">
                 <div>
                     <h1 className="text-xs font-bold uppercase tracking-widest text-red-600 mb-2">Admin Dashboard</h1>
                     <h2 className="text-4xl font-extrabold text-gray-900 mb-2">{data.title}</h2>
+                    
                 </div>
-            </header>
+                <button 
+                    onClick={() => {
+                        if(confirm("Delete this party?")) deletePartyMutation.mutate();
+                    }}
+                    className="bg-red-600 text-white px-6 py-2 rounded-lg text-sm font-bold shadow-lg"
+                >
+                    Delete Party
+                </button>
+            </section>
             {/* Announcements List */}
             <section className="space-y-4">
                 <div className="flex justify-between items-start">

@@ -45,7 +45,7 @@ func init() {
 	r.HandleFunc("/api/announcement/{code}", transport.UpdateAnnouncementHandler).Methods("PUT")
 	r.HandleFunc("/api/announcement/{code}", transport.DeleteAnnouncementHandler).Methods("DELETE")
 	r.HandleFunc("/api/admin/party/{code}", transport.UpdatePartyHandler).Methods("PUT")
-
+	r.HandleFunc("/api/admin/party/{code}", transport.DeletePartyHandler).Methods("DELETE")
 
 	fmt.Println(env.AllowedOrigins)
 	cors := handlers.CORS(

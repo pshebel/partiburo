@@ -8,7 +8,7 @@ import (
 	"github.com/pshebel/partiburo/backend/database"
 )
 
-func GetHome(code string) (models.Home, error) {
+func GetHome(code string) (models.Home, *models.Response) {
 	log.Println("GetHome")
 	home := models.Home{}
 
@@ -17,7 +17,7 @@ func GetHome(code string) (models.Home, error) {
 	db, err := database.GetDB()
 	if err != nil {
 		log.Println(err)
-		return home, err
+		return home, &models.Response{500, "service error"}
 	}
 	
 	partyQuery := `SELECT id, date, time, address, title, description FROM party WHERE user_code = ? OR admin_code = ?`
@@ -25,14 +25,17 @@ func GetHome(code string) (models.Home, error) {
 	err = row.Scan(&party_id, &home.Date, &home.Time, &home.Address, &home.Title, &home.Description)
 	if err != nil {
 		log.Println(err)
-		return home, err
+		if err == sql.ErrNoRows {
+			return home, &models.Response{404, "could not find party"}
+		}
+		return home, &models.Response{500, "service error"}
 	}
 
 	announcementsQuery := `SELECT id, header, body, created_at FROM announcements where party_id = $1`
 	rows, err := db.Query(announcementsQuery, party_id)
 	if err != nil {
 		log.Println(err)
-		return home, err
+		return home, &models.Response{500, "service error"}
 	}
 	defer rows.Close()
 
@@ -41,13 +44,13 @@ func GetHome(code string) (models.Home, error) {
 		var a models.Announcement
 		err := rows.Scan(&a.ID, &a.Header, &a.Body, &a.CreatedAt)
 		if err != nil {
-			return home, err
+			return home, &models.Response{500, "service error"}
 		}
 		home.Announcements = append(home.Announcements, a)
 	}
 	err = rows.Err()
 	if err != nil {
-		return home, err
+		return home, &models.Response{500, "service error"}
 	}
 
 	guestsQuery := `
@@ -56,7 +59,7 @@ func GetHome(code string) (models.Home, error) {
 	rows, err = db.Query(guestsQuery, party_id)
 	if err != nil {
 		log.Println(err)
-		return home, err
+		return home, &models.Response{500, "service error"}
 	}
 	defer rows.Close()
 
@@ -66,7 +69,7 @@ func GetHome(code string) (models.Home, error) {
 		var status sql.NullString
 		err := rows.Scan(&g.ID, &g.Name, &status, &g.Plus, &g.CreatedAt)
 		if err != nil {
-			return home, err
+			return home, &models.Response{500, "service error"}
 		}
 
 		if status.Valid{
@@ -83,7 +86,7 @@ func GetHome(code string) (models.Home, error) {
 	}
 	err = rows.Err()
 	if err != nil {
-		return home, err
+		return home, &models.Response{500, "service error"}
 	}
 
 
@@ -101,7 +104,7 @@ func GetHome(code string) (models.Home, error) {
 	rows, err = db.Query(postsQuery, party_id)
 	if err != nil {
 		log.Println(err)
-		return home, err
+		return home, &models.Response{500, "service error"}
 	}
 	defer rows.Close()
 
@@ -110,13 +113,13 @@ func GetHome(code string) (models.Home, error) {
 		var p models.Post
 		err := rows.Scan(&p.ID, &p.GuestID, &p.Name, &p.Body, &p.CreatedAt)
 		if err != nil {
-			return home, err
+			return home, &models.Response{500, "service error"}
 		}
 		home.Posts = append(home.Posts, p)
 	}
 	err = rows.Err()
 	if err != nil {
-		return home, err
+		return home, &models.Response{500, "service error"}
 	}
 
 	return home, nil

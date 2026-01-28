@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS party (
 	admin_code TEXT NOT NULL DEFAULT '',
 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 	admin_email_id INTEGER NOT NULL,
-	FOREIGN KEY (admin_email_id) REFERENCES email(id)
+	FOREIGN KEY (admin_email_id) REFERENCES email(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS guests (
@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS guests (
 	party_id INTEGER NOT NULL,
 	email_id INTEGER,
 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-	FOREIGN KEY (party_id) REFERENCES party(id),
-	FOREIGN KEY (email_id) REFERENCES email(id),
+	FOREIGN KEY (party_id) REFERENCES party(id) ON DELETE CASCADE,
+	FOREIGN KEY (email_id) REFERENCES email(id) ON DELETE CASCADE,
 	UNIQUE (name, party_id)
 );
 
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS announcements (
 	body TEXT NOT NULL,
 	party_id INTEGER NOT NULL,
 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-	FOREIGN KEY (party_id) REFERENCES party(id)
+	FOREIGN KEY (party_id) REFERENCES party(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS posts (
@@ -47,8 +47,8 @@ CREATE TABLE IF NOT EXISTS posts (
 	party_id INTEGER NOT NULL,
 	guest_id INTEGER NOT NULL,
 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-	FOREIGN KEY (party_id) REFERENCES party(id),
-	FOREIGN KEY (guest_id) REFERENCES guests(id)
+	FOREIGN KEY (party_id) REFERENCES party(id) ON DELETE CASCADE,
+	FOREIGN KEY (guest_id) REFERENCES guests(id) ON DELETE CASCADE
 );
 
 
@@ -57,13 +57,13 @@ CREATE TABLE IF NOT EXISTS notifications (
     summary TEXT NOT NULL,
 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 	email_id INTEGER NOT NULL,
-	FOREIGN KEY (email_id) REFERENCES email(id)
+	FOREIGN KEY (email_id) REFERENCES email(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS blacklist (
 	id INTEGER PRIMARY KEY,
     email_id INTEGER NOT NULL UNIQUE,
-	FOREIGN KEY (email_id) REFERENCES email(id)
+	FOREIGN KEY (email_id) REFERENCES email(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS whitelist (
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS whitelist (
     confirmed BOOLEAN NOT NULL DEFAULT FALSE,
     passcode TEXT NOT NULL,
 	email_id INTEGER NOT NULL,
-	FOREIGN KEY (email_id) REFERENCES email(id)
+	FOREIGN KEY (email_id) REFERENCES email(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS queue (
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS queue (
     last_attempt DATETIME,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 	email_id INTEGER NOT NULL,
-	FOREIGN KEY (email_id) REFERENCES email(id)
+	FOREIGN KEY (email_id) REFERENCES email(id) ON DELETE CASCADE
 );
 
 
@@ -95,5 +95,5 @@ CREATE TABLE IF NOT EXISTS reminders (
 	day_of BOOLEAN,
 	day_before BOOLEAN,
 	week_before BOOLEAN,
-	FOREIGN KEY (party_id) REFERENCES party(id)
+	FOREIGN KEY (party_id) REFERENCES party(id) ON DELETE CASCADE
 );

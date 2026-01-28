@@ -51,7 +51,7 @@ func GetPartyHandler(w http.ResponseWriter, r *http.Request) {
 	if resp != nil {
 		fmt.Println(resp)
 		w.WriteHeader(resp.Code)
-        json.NewEncoder(w).Encode(resp)
+        json.NewEncoder(w).Encode(*resp)
 		return
 	}
 
@@ -107,6 +107,24 @@ func UpdatePartyHandler(w http.ResponseWriter, r *http.Request) {
     }
 
 	resp := operations.UpdateParty(code, req)
+
+	w.WriteHeader(resp.Code)
+	json.NewEncoder(w).Encode(resp)
+}
+
+func DeletePartyHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+    code := vars["code"]
+    if code == "" {
+        w.WriteHeader(http.StatusBadRequest)
+        json.NewEncoder(w).Encode(models.Response{
+            Code:    400,
+            Message: "missing code",
+        })
+        return
+    }
+
+	resp := operations.DeleteParty(code)
 
 	w.WriteHeader(resp.Code)
 	json.NewEncoder(w).Encode(resp)

@@ -249,3 +249,51 @@ func UpdateParty(code string, req models.Party) models.Response {
 
 	return models.Response{200, "success"}
 }
+
+func DeleteParty(code string) models.Response {
+	log.Println("DeleteParty")
+	
+	db, err := database.GetDB()
+	if err != nil {
+		log.Println(err)
+		return models.Response{500, "Service Error"}
+	}
+
+	tx, err := db.Begin()
+    if err != nil {
+		log.Println(err)
+		return models.Response{500, "service error"}
+    }
+
+	defer tx.Rollback()
+
+	party_id := 0
+	row := tx.QueryRow("SELECT id FROM party WHERE admin_code=?", code)
+	err = row.Scan(&party_id)
+	if err != nil {
+		log.Println(err)
+		return models.Response{500, "service error"}
+	}
+	_, err = tx.Exec("DELETE FROM announcements WHERE party_id = ?", party_id)
+	if err != nil {
+		log.Println(err)
+		return models.Response{500, "service error"}
+    }
+    _, err = tx.Exec("DELETE FROM guests WHERE party_id = ?", party_id)
+	if err != nil {
+		log.Println(err)
+		return models.Response{500, "service error"}
+    }
+    _, err = tx.Exec("DELETE FROM party WHERE id = ?", party_id)
+	if err != nil {
+		log.Println(err)
+		return models.Response{500, "service error"}
+    }
+
+	err = tx.Commit()
+	if err != nil {
+		log.Println(err)
+		return models.Response{500, "service error"}
+    }
+	return models.Response{200, "success"}
+}
