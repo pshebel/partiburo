@@ -182,29 +182,27 @@ func CreateParty(req models.PartyRequest) (models.PartyResponse, *models.Respons
 		return resp, &models.Response{500, "Service Error"}
 	}
 
-	if (len(req.Reminders) > 0) {
-		var announcements, dayOf, dayBefore, weekBefore bool
-		for _, r := range req.Reminders {
-			switch r {
-			case "day_of":
-				dayOf = true
-			case "day_before":
-				dayBefore = true
-			case "week_before":
-				weekBefore = true
-			case "announcements": 
-				announcements = true
-			}
+	var announcements, dayOf, dayBefore, weekBefore bool
+	for _, r := range req.Reminders {
+		switch r {
+		case "day_of":
+			dayOf = true
+		case "day_before":
+			dayBefore = true
+		case "week_before":
+			weekBefore = true
+		case "announcements": 
+			announcements = true
 		}
+	}
 
-		query = `INSERT INTO reminders (party_id, day_of, day_before, week_before, announcements) VALUES (? ,? ,? ,? ,?)`
-		_, err = tx.Exec(query, party_id, dayOf, dayBefore, weekBefore, announcements)
-		if err != nil {
-			tx.Rollback()
-			log.Println(err)
-			return resp, &models.Response{500, "Service Error"}
-		}
-	} 
+	query = `INSERT INTO reminders (party_id, day_of, day_before, week_before, announcements) VALUES (? ,? ,? ,? ,?)`
+	_, err = tx.Exec(query, party_id, dayOf, dayBefore, weekBefore, announcements)
+	if err != nil {
+		tx.Rollback()
+		log.Println(err)
+		return resp, &models.Response{500, "Service Error"}
+	}
 
 
 	subject := fmt.Sprintf("Here are your Partiburo links for %s", req.Title)
@@ -274,12 +272,22 @@ func DeleteParty(code string) models.Response {
 		log.Println(err)
 		return models.Response{500, "service error"}
 	}
+	_, err = tx.Exec("DELETE FROM reminders WHERE party_id = ?", party_id)
+	if err != nil {
+		log.Println(err)
+		return models.Response{500, "service error"}
+    }
 	_, err = tx.Exec("DELETE FROM announcements WHERE party_id = ?", party_id)
 	if err != nil {
 		log.Println(err)
 		return models.Response{500, "service error"}
     }
     _, err = tx.Exec("DELETE FROM guests WHERE party_id = ?", party_id)
+	if err != nil {
+		log.Println(err)
+		return models.Response{500, "service error"}
+    }
+	_, err = tx.Exec("DELETE FROM posts WHERE party_id = ?", party_id)
 	if err != nil {
 		log.Println(err)
 		return models.Response{500, "service error"}

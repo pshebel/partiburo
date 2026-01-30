@@ -132,13 +132,13 @@ export const Home = () => {
                 <h1 className="text-xs font-bold uppercase tracking-widest text-green-600 mb-6">Guest List ({data.Going} going)</h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {data.Guests.sort((a,b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)).map((g, i) => (
-                        <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
+                        <div key={i} className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                             <div className="flex flex-col">
                                 <span className="font-semibold text-gray-800">{g.name}</span>
                                 <span className="text-xs text-gray-500 italic">{g.status}</span>
                             </div>
                             {g.id === guest_id && (
-                                <Link to={`/guest/${code}`} className="text-xs bg-white border px-3 py-1 rounded hover:bg-gray-100 transition shadow-sm">
+                                <Link to={`/guest/${code}`} className="bg-green-600 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-green-700 transition">
                                     Edit Profile
                                 </Link>
                             )}
@@ -168,16 +168,16 @@ export const Home = () => {
                                     
                                     {/* 3. Show controls only if the guest_id matches */}
                                     {p.guest_id === guest_id && editingPostId !== p.id && (
-                                        <div className="flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="flex flex-row gap-3">
                                             <button 
                                                 onClick={() => { setEditingPostId(p.id); setEditBody(p.body); }}
-                                                className="text-xs text-blue-600 font-semibold hover:underline"
+                                                className="bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-purple-700 transition"
                                             >
                                                 Edit
                                             </button>
                                             <button 
                                                 onClick={() => { if(confirm("Delete post?")) deletePostMutation.mutate(p.id); }}
-                                                className="text-xs text-red-600 font-semibold hover:underline"
+                                                className="bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-purple-700 transition"
                                             >
                                                 Delete
                                             </button>

@@ -113,7 +113,7 @@ export const AdminHome = () => {
                     onClick={() => {
                         if(confirm("Delete this party?")) deletePartyMutation.mutate();
                     }}
-                    className="bg-red-600 text-white px-6 py-2 rounded-lg text-sm font-bold shadow-lg"
+                    className="bg-red-600 text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-red-700 shadow-lg"
                 >
                     Delete Party
                 </button>
@@ -122,22 +122,22 @@ export const AdminHome = () => {
             <section className="space-y-4">
                 <div className="flex justify-between items-start">
                     <h3 className="text-xl font-bold text-gray-900">Recent Announcements</h3>
-                    <Link to={`/announcement/${code}`} className="bg-orange-600 text-white px-6 py-2 rounded-lg text-sm font-bold shadow-lg">
+                    <Link to={`/announcement/${code}`} className="bg-orange-600 text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-orange-700 shadow-lg">
                         Post Announcement
                     </Link>
                 </div>
                 <div className="grid gap-4">
                     {data.announcements.sort((a,b) => Date.parse(b.created_at) - Date.parse(a.created_at)).map((ann: any) => (
-                        <div key={ann.id} className="p-4 border rounded-xl shadow-sm bg-white relative group">
+                        <div key={ann.id} className="p-4 bg-orange-50 rounded-xl border border-orange-100 relative group">
                             {editingId === ann.id ? (
                                 <div className="space-y-3">
                                     <input 
-                                        className="w-full p-2 border rounded"
+                                        className="w-full p-2 bg-white border rounded"
                                         value={editValues.header}
                                         onChange={e => setEditValues({...editValues, header: e.target.value})}
                                     />
                                     <textarea 
-                                        className="w-full p-2 border rounded"
+                                        className="w-full p-2 border bg-white rounded"
                                         value={editValues.body}
                                         onChange={e => setEditValues({...editValues, body: e.target.value})}
                                     />
@@ -163,13 +163,13 @@ export const AdminHome = () => {
                                             <h4 className="font-bold text-lg">{ann.header}</h4>
                                             <p className="text-gray-600">{ann.body}</p>
                                         </div>
-                                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition">
+                                        <div className="flex flex-row gap-3">
                                             <button 
                                                 onClick={() => {
                                                     setEditingId(ann.id);
                                                     setEditValues({ header: ann.header, body: ann.body });
                                                 }}
-                                                className="text-blue-600 text-sm font-semibold"
+                                                className="bg-orange-600 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-orange-700 transition"
                                             >
                                                 Edit
                                             </button>
@@ -177,7 +177,7 @@ export const AdminHome = () => {
                                                 onClick={() => {
                                                     if(confirm("Delete this announcement?")) deleteAnnouncementMutation.mutate(ann.id);
                                                 }}
-                                                className="text-red-600 text-sm font-semibold"
+                                                className="bg-orange-600 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-orange-700 transition"
                                             >
                                                 Delete
                                             </button>
