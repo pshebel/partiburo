@@ -7,4 +7,4 @@ docker cp temp-container:/app/mail ./mail
 docker rm temp-container
 
 rm ~/projects/infra/scripts/backend/service/mail
-cp mail ~/projects/infra/scripts/backend/servicew
+cp mail ~/projects/infra/scripts/backend/service
