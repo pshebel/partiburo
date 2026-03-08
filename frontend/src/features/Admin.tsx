@@ -1,4 +1,4 @@
-import { getParty } from '../hooks/party';
+import { getHome } from '../hooks/home';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { PartyForm } from './PartyForm';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -9,7 +9,7 @@ export const AdminHome = () => {
     const navigate = useNavigate()
     const { code } = useParams();
     const queryClient = useQueryClient();
-    const { data, isLoading, error } = getParty(code);
+    const { data, isLoading, error } = getHome(code);
 
     // State to track which announcement is being edited
     const [editingId, setEditingId] = useState<number | null>(null);
@@ -106,7 +106,7 @@ export const AdminHome = () => {
             <section className="flex justify-between items-center border-b pb-8">
                 <div>
                     <h1 className="text-xs font-bold uppercase tracking-widest text-red-600 mb-2">Admin Dashboard</h1>
-                    <h2 className="text-4xl font-extrabold text-gray-900 mb-2">{data.title}</h2>
+                    <h2 className="text-4xl font-extrabold text-gray-900 mb-2">{data.party.title}</h2>
                     
                 </div>
                 <button 
@@ -192,18 +192,32 @@ export const AdminHome = () => {
                     )}
                 </div>
             </section>
-
+            
             <hr />
             {/* Party Edit Form */}
             <section className="bg-gray-50 p-8 rounded-2xl border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-6">Edit Party Details</h3>
                 <PartyForm 
                     buttonLabel="Update Party"
-                    initialValues={data}
+                    initialValues={data.party}
                     onSubmit={async (values) => {
                         await updatePartyMutation.mutateAsync(values);
                     }}
                 />
+            </section>
+            {/* 3. Guests List */}
+            <section>
+                <h1 className="text-xs font-bold uppercase tracking-widest text-green-600 mb-6">Guest List ({data.going} going)</h1>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {data.guests.sort((a,b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)).map((g, i) => (
+                        <div key={i} className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                            <div className="flex flex-col">
+                                <span className="font-semibold text-gray-800">{g.name}</span>
+                                <span className="text-xs text-gray-500 italic">{g.status}</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </section>
         </div>
     );

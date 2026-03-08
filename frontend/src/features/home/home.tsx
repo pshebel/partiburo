@@ -98,19 +98,19 @@ export const Home = () => {
                     You're Invited
                 </span>
                 <h1 className="text-5xl font-black text-gray-900 mt-2 mb-6 tracking-tight">
-                    {data.Title}
+                    {data.party.title}
                 </h1>
                 <p className="max-w-2xl mx-auto text-xl text-gray-600 leading-relaxed mb-8 whitespace-pre-line">
-                    {data.Description}
+                    {data.party.description}
                 </p>
                 
                 {/* Centered Pill Detail Bar */}
                 <div className="inline-flex flex-wrap justify-center gap-6 px-8 py-4 bg-white rounded-2xl shadow-sm border border-gray-100 text-sm font-semibold text-gray-700">
-                    <div className="flex items-center gap-2">📅 {data.Date}</div>
+                    <div className="flex items-center gap-2">📅 {data.party.date}</div>
                     <div className="hidden sm:block border-r border-gray-200 h-4" />
-                    <div className="flex items-center gap-2">⏰ {data.Time}</div>
+                    <div className="flex items-center gap-2">⏰ {data.party.time}</div>
                     <div className="hidden sm:block border-r border-gray-200 h-4" />
-                    <div className="flex items-center gap-2">📍 {data.Address}</div>
+                    <div className="flex items-center gap-2">📍 {data.party.address}</div>
                 </div>
             </section>
 
@@ -118,7 +118,7 @@ export const Home = () => {
             <section>
                 <h1 className="text-xs font-bold uppercase tracking-widest text-orange-600 mb-6">Announcements</h1>
                 <div className="space-y-4">
-                    {data.Announcements.sort((a,b) => Date.parse(b.created_at) - Date.parse(a.created_at)).map((a, i) => (
+                    {data.announcements.sort((a,b) => Date.parse(b.created_at) - Date.parse(a.created_at)).map((a, i) => (
                         <div key={i} className="p-4 bg-orange-50 rounded-xl border border-orange-100">
                             <h3 className="font-bold text-gray-900">{a.header}</h3>
                             <div className="text-gray-700 mt-1">{a.body}</div>
@@ -129,9 +129,9 @@ export const Home = () => {
 
             {/* 3. Guests List */}
             <section>
-                <h1 className="text-xs font-bold uppercase tracking-widest text-green-600 mb-6">Guest List ({data.Going} going)</h1>
+                <h1 className="text-xs font-bold uppercase tracking-widest text-green-600 mb-6">Guest List ({data.going} going)</h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {data.Guests.sort((a,b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)).map((g, i) => (
+                    {data.guests.sort((a,b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)).map((g, i) => (
                         <div key={i} className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                             <div className="flex flex-col">
                                 <span className="font-semibold text-gray-800">{g.name}</span>
@@ -157,7 +157,7 @@ export const Home = () => {
                 </div>
                 
                 <div className="space-y-6">
-                    {data.Posts.sort((a,b) => Date.parse(b.created_at) - Date.parse(a.created_at)).map((p, i) => (
+                    {data.posts.sort((a,b) => Date.parse(b.created_at) - Date.parse(a.created_at)).map((p, i) => (
                         <div key={i} className="flex gap-4 items-start group">
                             <div className="w-10 h-10 rounded-full bg-purple-100 flex-shrink-0 flex items-center justify-center text-purple-600 font-bold">
                                 {p.name[0]}

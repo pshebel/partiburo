@@ -25,16 +25,11 @@ export interface Party {
 }
 
 export interface Home {
-    Title:          string;
-    Description:    string;
-    Date:           string;
-    Time:           string;
-    Address:        string;
-    Announcements:  Announcement[];
-    Going:          number;
-    Guests:         Guest[];
-    Posts:          Post[];
-    CreatedAt:      string;
+    party:          Party;
+    announcements:  Announcement[];
+    going:          number;
+    guests:         Guest[];
+    posts:          Post[];
 }
 
 export interface Announcement {
