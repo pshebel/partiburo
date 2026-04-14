@@ -60,7 +60,7 @@ jobs:
     - name: Copy file
       run: |
         # Update function code
-        aws s3 cp partiburo s3://partiburo/prod/backend/service/partiburo
+        aws s3 cp partiburo s3://divlab-prod/partiburo/prod/backend/service/partiburo
     
     - name: Restart
       run: | 
@@ -69,7 +69,7 @@ jobs:
         --instance-ids "${{ secrets.BACKEND_ID }}" \
         --parameters commands='[
           "sudo systemctl stop partiburo || true",
-          "sudo aws s3 cp s3://partiburo/prod/backend/service/partiburo /usr/local/bin/partiburo",
+          "sudo aws s3 cp s3://divlab-prod/partiburo/prod/backend/service/partiburo /usr/local/bin/partiburo",
           "sudo chmod +x /usr/local/bin/partiburo",
           "sudo chown partiburo:partiburo /usr/local/bin/partiburo",
           "sudo systemctl start partiburo"  

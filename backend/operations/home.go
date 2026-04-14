@@ -19,10 +19,10 @@ func GetHome(code string) (models.Home, *models.Response) {
 		log.Println(err)
 		return home, &models.Response{500, "service error"}
 	}
-	
+	party := models.Party{}
 	partyQuery := `SELECT id, date, time, address, title, description FROM party WHERE user_code = ? OR admin_code = ?`
 	row := db.QueryRow(partyQuery, code, code)
-	err = row.Scan(&party_id, &home.Date, &home.Time, &home.Address, &home.Title, &home.Description)
+	err = row.Scan(&party_id, &party.Date, &party.Time, &party.Address, &party.Title, &party.Description)
 	if err != nil {
 		log.Println(err)
 		if err == sql.ErrNoRows {
@@ -30,6 +30,7 @@ func GetHome(code string) (models.Home, *models.Response) {
 		}
 		return home, &models.Response{500, "service error"}
 	}
+	home.Party = party
 
 	announcementsQuery := `SELECT id, header, body, created_at FROM announcements where party_id = $1`
 	rows, err := db.Query(announcementsQuery, party_id)

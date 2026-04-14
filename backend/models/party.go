@@ -21,17 +21,11 @@ type LoginResponse struct {
 }
 
 type Home struct {
-	ID				string
-	Title			string
-	Description		string
-	Date			string
-	Time			string
-	Address			string
-	Announcements	[]Announcement
-	Going			int
-	Guests			[]Guest
-	Posts			[]Post
-	CreatedAt 		time.Time
+	Party 			Party 			`json:"party"`
+	Announcements	[]Announcement 	`json:"announcements"`
+	Going			int				`json:"going"`
+	Guests			[]Guest			`json:"guests"`
+	Posts			[]Post			`json:"posts"`
 }
 
 type Party struct {
