@@ -213,7 +213,7 @@ export const AdminHome = () => {
                         <div key={i} className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                             <div className="flex flex-col">
                                 <span className="font-semibold text-gray-800">{g.name}</span>
-                                <span className="text-xs text-gray-500 italic">{g.status}</span>
+                                <span className="text-xs text-gray-500 italic">{g.status} {parseInt(g.plus) > 0 && `(+${g.plus})`}</span>
                             </div>
                         </div>
                     ))}

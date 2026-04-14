@@ -135,7 +135,7 @@ export const Home = () => {
                         <div key={i} className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                             <div className="flex flex-col">
                                 <span className="font-semibold text-gray-800">{g.name}</span>
-                                <span className="text-xs text-gray-500 italic">{g.status}</span>
+                                <span className="text-xs text-gray-500 italic">{g.status} {parseInt(g.plus) > 0 && `(+${g.plus})`}</span>
                             </div>
                             {g.id === guest_id && (
                                 <Link to={`/guest/${code}`} className="bg-green-600 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-green-700 transition">
