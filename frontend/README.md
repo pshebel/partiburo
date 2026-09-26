@@ -6,5 +6,6 @@ To run this example:
 - `npm run dev`
 
 
-rm -rf ~/projects/infra/scripts/frontend/dist/*
-cp -r dist/* ~/projects/infra/scripts/frontend/dist
+rm -rf ~/projects/infra/scripts/partiburo/frontend/dist/*
+
+cp -r dist/* ~/projects/infra/scripts/partiburo/frontend/dist/*

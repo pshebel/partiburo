@@ -51,7 +51,7 @@ export const Guest = () => {
   const { data: homeData } = getHome(code)
 
   // Find the specific guest record from the home data
-  const currentGuest = homeData?.Guests.find(g => g.id === guest_id)
+  const currentGuest = homeData?.guests.find(g => g.id === guest_id)
 
   const form = useAppForm({
     ...guestFormOptions,

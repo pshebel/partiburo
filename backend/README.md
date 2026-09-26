@@ -6,5 +6,5 @@ docker create --name temp-container partiburo-builder
 docker cp temp-container:/app/partiburo ./partiburo
 docker rm temp-container
 
-rm ~/projects/infra/scripts/backend/partiburo
-cp partiburo ~/projects/infra/scripts/backend
+rm ~/projects/infra/scripts/partiburo/backend/service/partiburo
+cp partiburo ~/projects/infra/scripts/partiburo/backend/service/partiburo

@@ -50,8 +50,8 @@ jobs:
     - name: Copy file
       run: |
         # Update function code
-        aws s3 rm s3://divlab-prod/partiburo/prod/frontend/dist/ --recursive
-        aws s3 cp ./dist/ s3://divlab-prod/partiburo/prod/frontend/dist/ --recursive
+        aws s3 rm s3://partiburo/prod/frontend/dist/ --recursive
+        aws s3 cp ./dist/ s3://partiburo/prod/frontend/dist/ --recursive
     
     - name: Restart
       run: |
@@ -59,10 +59,10 @@ jobs:
         --document-name "AWS-RunShellScript" \
         --instance-ids "${{ secrets.FRONTEND_ID }}" \
         --parameters commands='[
-          "sudo systemctl stop nginx",
-          "sudo rm -rf /var/www/html/partiburo/*",
-          "aws s3 cp s3://divlab-prod/partiburo/prod/frontend/dist/ /var/www/html/partiburo --recursive",
-          "sudo systemctl restart nginx"
+            "sudo systemctl stop nginx",
+            "sudo rm -rf /var/www/html/partiburo/prod/*",
+            "aws s3 cp s3://partiburo/prod/frontend/dist/ /var/www/html/partiburo/prod --recursive",
+            "sudo systemctl restart nginx"
         ]' \
         --output text
 # jobs:
